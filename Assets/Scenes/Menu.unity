@@ -356,12 +356,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 237cd08ef478e08428a2513e842d8d01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startButton: {fileID: 1184235878}
-  continueButton: {fileID: 1184235878}
-  settingsButton: {fileID: 39783971}
-  deleteDataButton: {fileID: 341920384}
-  mainMenuUI: {fileID: 958114637}
-  settingsUI: {fileID: 1667985121}
+  StartBtn: {fileID: 1184235878}
+  SettingBtn: {fileID: 39783971}
+  ExitBtn: {fileID: 1869107357}
+  BackToBaseBtn: {fileID: 978311694}
+  ClearDataBtn: {fileID: 341920384}
+  BasePanel: {fileID: 958114637}
+  SettingPanel: {fileID: 1667985121}
 --- !u!1 &149214892
 GameObject:
   m_ObjectHideFlags: 0

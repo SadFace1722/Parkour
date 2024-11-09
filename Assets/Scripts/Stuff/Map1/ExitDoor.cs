@@ -18,7 +18,7 @@ public class ExitDoor : MonoBehaviour, PlayerInterface
         if (CraftDoor.Instance.OpenDoor && !DestroyDoor)
         {
             DestroyDoor = true;
-            CutsceneManager.Instance.PlayCutscene(1);
+            CutsceneManager.Instance.PlayCutscene(2);
         }
     }
 }

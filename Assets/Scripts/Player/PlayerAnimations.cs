@@ -32,6 +32,6 @@ public class PlayerAnimations : MonoBehaviour
 
     void Death()
     {
-        anim.SetBool("Death", !PlayerController.Instance.canControll);
+        anim.SetBool("Death", PlayerController.Instance.isDead);
     }
 }

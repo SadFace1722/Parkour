@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    public static PlayerController Instance { get;  set; }
+    public static PlayerController Instance { get; set; }
     [SerializeField] CharacterController controller;
     [SerializeField] Camera cam, fpsCam;
     [SerializeField] GameObject thirdPersonCamera, fpsCamera;
     Vector3 hor, ver, camF, camR;
     [SerializeField] float moveSpeed, jumpForce, gravity;
-    public bool isGrounded, isFalling, isMoving, isJumping, canControll;
+    public bool isGrounded, isFalling, isMoving, isJumping, canControll, isDead;
     public GameObject Player, Armor, Shotgun;
     public float currentHealth = 100;
     public Image HealImage, Crosshair;
@@ -53,6 +53,11 @@ public class PlayerController : MonoBehaviour
         if (currentHealth <= 0)
         {
             StartCoroutine(WaitBeforeRespawn(2f));
+            isDead = true;
+        }
+        else
+        {
+            isDead = false;
         }
 
         canControll = currentHealth > 0;
@@ -70,25 +75,34 @@ public class PlayerController : MonoBehaviour
 
         isMoving = isGrounded && hor.sqrMagnitude > 0.1f;
 
-        if (canControll && !CutsceneManager.Instance.isCutscenePlaying)
+        // Kiểm tra xem cutscene có đang chạy không
+        if (CutsceneManager.Instance.isCutscenePlaying)
         {
-            HandleInput();
-            HandleMove();
+            canControll = false;
+            ToggleCamera(); // Tắt camera trong khi cutscene
+        }
+        else
+        {
+            canControll = true;
+            ToggleCamera(); // Bật camera theo `IsParkour` khi hết cutscene
 
-            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+            if (canControll&&!isDead)
             {
-                HandleJump();
-            }
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                IsParkour = !IsParkour;
+                HandleInput();
+                HandleMove();
+
+                if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+                {
+                    HandleJump();
+                }
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    IsParkour = !IsParkour;
+                }
             }
         }
 
         HandleGravity();
-
-        // Chuyển đổi camera nếu IsParkour thay đổi
-        ToggleCamera();
     }
 
     void HandleInput()
@@ -182,30 +196,38 @@ public class PlayerController : MonoBehaviour
     }
 
     private IEnumerator WaitBeforeRespawn(float delayTime)
-{
-    yield return new WaitForSeconds(delayTime); // Đợi 1.5 giây
-    GameManager.Instance.LoadGameProgress();
-    currentHealth = PlayerController.Instance.currentHealth;  // Lấy currentHealth từ PlayerController
-    transform.position = GameManager.Instance.playerTransform.position;
-    Debug.Log("Player has respawned at save point.");
-}
-
+    {
+        yield return new WaitForSeconds(delayTime); // Đợi 1.5 giây
+        GameManager.Instance.LoadGameProgress();
+        currentHealth = PlayerController.Instance.currentHealth;  // Lấy currentHealth từ PlayerController
+        transform.position = GameManager.Instance.playerTransform.position;
+        Debug.Log("Player has respawned at save point.");
+    }
 
     void ToggleCamera()
     {
-        if (IsParkour)
+        // Kiểm tra nếu đang trong cutscene thì tắt tất cả camera
+        if (CutsceneManager.Instance.isCutscenePlaying)
         {
-            // Ẩn camera FPS và bật camera Third-Person
             fpsCamera.SetActive(false);
             thirdPersonCamera.SetActive(true);
             Crosshair.gameObject.SetActive(false);
         }
         else
         {
-            // Ẩn camera Third-Person và bật camera FPS
-            fpsCamera.SetActive(true);
-            thirdPersonCamera.SetActive(false);
-            Crosshair.gameObject.SetActive(true);
+            // Bật/tắt camera theo trạng thái IsParkour khi không trong cutscene
+            if (IsParkour)
+            {
+                fpsCamera.SetActive(false);
+                thirdPersonCamera.SetActive(true);
+                Crosshair.gameObject.SetActive(false);
+            }
+            else
+            {
+                fpsCamera.SetActive(true);
+                thirdPersonCamera.SetActive(false);
+                Crosshair.gameObject.SetActive(true);
+            }
         }
     }
 }

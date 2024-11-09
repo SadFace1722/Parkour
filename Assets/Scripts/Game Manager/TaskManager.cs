@@ -17,12 +17,13 @@ public class TaskManager : MonoBehaviour
 
     private void Awake()
     {
+        gameData = new GameData();
+
         if (Instance == null)
         {
             Instance = this;
         }
         Invoke("GetAnim", 1f);
-        gameData = new GameData(); // Khởi tạo GameData
     }
 
     void GetAnim()
@@ -32,14 +33,15 @@ public class TaskManager : MonoBehaviour
 
     private void Start()
     {
-        LoadProgress(); // Tải tiến độ nhiệm vụ từ GameData khi game bắt đầu
+        LoadProgress();
+
         tasks.Add(new Task(5f, "Khám phá khu vực.", BatDauKiemTra, KiemTraHoanTat, () => nv1.Instance.seeAroundArea));
         tasks.Add(new Task(5f, "Thử tìm kiếm xung quanh.", () => nv5.Instance.KiemTraXungQuanh));
         tasks.Add(new Task(15f, "Kích Hoạt lại máy phát điện.", TimKiemNangLuong, KichHoatMayPhatDien, () => nv2.Instance.generator));
         tasks.Add(new Task(10f, "Kiểm tra phòng chế tạo.", MoCuaPhongCheTao, KiemTraPhong, () => CraftDoor.Instance.OpenDoor));
         tasks.Add(new Task(10f, "Sử dụng bộ giáp.", KiemTraBoGiap, SudungBoGiap, () => nv3.Instance.isUseArmor));
         tasks.Add(new Task(2f, "Phá cửa với bộ giáp.", () => ExitDoor.Instance.DestroyDoor));
-        tasks.Add(new Task(5f, "Nhảy qua khu vực Acid", () => nv6.Instance.BangQuaAcid));
+        tasks.Add(new Task(15f, "Nhảy qua khu vực Acid", () => nv6.Instance.BangQuaAcid));
         tasks.Add(new Task(2, "Nhặt khẩu súng từ xác chết.", NhatKhauSung, NhatSungHoanThanh, () => PickupGun.Instance.PickuptheGun));
         tasks.Add(new Task(2, "Tìm cách tắt Acid.", TimCachTatAcid, DaTatDuocAcid, () => TurnOffAcid.Instance.turnOff));
         tasks.Add(new Task(2, "Tiêu diệt quái vật.", BatDauTieuDietAcidAlien, DaTieuDietXongAcidAlien, () => KillCount >= 5));
@@ -47,6 +49,10 @@ public class TaskManager : MonoBehaviour
 
         if (tasks.Count > 0)
         {
+            if (CurrentIndex == 0) // Nếu là lần đầu tiên chơi
+            {
+                CutsceneManager.Instance.PlayCutscene(0);
+            }
             NextTask();
         }
     }
@@ -98,8 +104,8 @@ public class TaskManager : MonoBehaviour
         task.IsComplete = true;
         IsProcessing = false;
 
-        // Lưu tiến độ nhiệm vụ
-        SaveProgress();
+        // Lưu tiến độ ngay khi hoàn thành nhiệm vụ
+        SaveGame();
 
         StartCoroutine(TimeToNextTask());
     }
@@ -108,68 +114,71 @@ public class TaskManager : MonoBehaviour
     {
         Task task = tasks[CurrentIndex];
         yield return new WaitForSeconds(task.Delay);
+
+        // Chuyển đến nhiệm vụ tiếp theo
         CurrentIndex++;
+        SaveGame();
         NextTask();
     }
 
-    void SaveProgress()
+    public void SaveGame()
     {
-        // Lưu tiến độ nhiệm vụ hiện tại (CurrentIndex) qua GameData
-        gameData.SaveGame(GameManager.Instance.savePointID, GameManager.Instance.playerTransform.position, PlayerController.Instance.currentHealth, CurrentIndex, GameManager.Instance.isArmorEquipped, GameManager.Instance.hasGun);
+        // Lấy thông tin hiện tại của người chơi và lưu
+        Vector3 playerPosition = PlayerController.Instance.transform.position;
+        float currentHealth = PlayerController.Instance.currentHealth;
+        int currentTaskIndex = CurrentIndex;
+        bool isArmorEquipped = GameManager.Instance.isArmorEquipped;
+        bool hasGun = GameManager.Instance.hasGun;
+
+        // Gọi GameData để lưu
+        gameData.SaveGame(GameManager.Instance.savePointID, playerPosition, currentHealth, currentTaskIndex, isArmorEquipped, hasGun);
     }
 
     void LoadProgress()
     {
-        // Tải tiến độ nhiệm vụ đã lưu từ GameData
+        // Tải tiến độ đã lưu từ GameData
         int currentTaskIndex;
         gameData.LoadGame(out int savePointID, out Vector3 playerPosition, out float currentHealth, out currentTaskIndex, out bool isArmorEquipped, out bool hasGun);
 
-        // Cập nhật tiến độ nhiệm vụ từ thông tin tải về
+        // Cập nhật tiến độ từ dữ liệu tải về
         CurrentIndex = currentTaskIndex;
         GameManager.Instance.savePointID = savePointID;
         GameManager.Instance.playerTransform.position = playerPosition;
         PlayerController.Instance.currentHealth = currentHealth;
         GameManager.Instance.isArmorEquipped = isArmorEquipped;
         GameManager.Instance.hasGun = hasGun;
+
+        // Khôi phục trạng thái của giáp và súng nếu đã trang bị trước đó
+        if (isArmorEquipped)
+        {
+            ArmorController.Instance.EquipArmor();
+        }
+        if (hasGun)
+        {
+            WeaponManager.Instance.GivePlayerGun();
+        }
     }
 
-
-    // Các phương thức nhiệm vụ (chưa thực hiện trong ví dụ này)
-    void BatDauKiemTra()
+    private void OnApplicationQuit()
     {
-        RenderSettings.fog = true;
+        // Lưu tiến độ khi thoát game
+        SaveGame();
     }
+
+    // Các phương thức nhiệm vụ (tùy chỉnh theo nội dung game)
+    void BatDauKiemTra() => RenderSettings.fog = true;
     void KiemTraHoanTat() => Debug.Log("");
 
     void TimKiemNangLuong() => Debug.Log("");
     void KichHoatMayPhatDien() => Debug.Log("");
 
-    void MoCuaPhongCheTao()
-    {
-        nv2.Instance.generator = true;
-    }
-    void KiemTraPhong()
-    {
-        nv2.Instance.generator = true;
-        CraftDoor.Instance.OpenDoor = true;
-    }
+    void MoCuaPhongCheTao() => CraftDoor.Instance.OpenDoor = true;
+    void KiemTraPhong() => CraftDoor.Instance.OpenDoor = true;
 
-    void KiemTraBoGiap()
-    {
-        nv2.Instance.generator = true;
-        CraftDoor.Instance.OpenDoor = true;
-    }
-    void SudungBoGiap()
-    {
-        nv2.Instance.generator = true;
-        CraftDoor.Instance.OpenDoor = true;
-        ArmorController.Instance.EquipArmor();
-    }
+    void KiemTraBoGiap() => CraftDoor.Instance.OpenDoor = true;
+    void SudungBoGiap() => ArmorController.Instance.EquipArmor();
 
-    void NhatKhauSung()
-    {
-        PlayerController.Instance.IsParkour = false;
-    }
+    void NhatKhauSung() { }
     void NhatSungHoanThanh()
     {
         WeaponManager.Instance.GivePlayerGun();
@@ -182,31 +191,12 @@ public class TaskManager : MonoBehaviour
         }
     }
 
-    void TimCachTatAcid()
-    {
+    void TimCachTatAcid() { }
+    void DaTatDuocAcid() => TurnOffAcid.Instance.turnOff = true;
 
-    }
-    void DaTatDuocAcid()
-    {
-        TurnOffAcid.Instance.turnOff = true;
-    }
+    void BatDauTieuDietAcidAlien() => TurnOffAcid.Instance.turnOff = true;
+    void DaTieuDietXongAcidAlien() => KillCount = 5;
 
-    void BatDauTieuDietAcidAlien()
-    {
-        TurnOffAcid.Instance.turnOff = true;
-    }
-
-    void DaTieuDietXongAcidAlien()
-    {
-        KillCount = 5;
-        TurnOffAcid.Instance.turnOff = true;
-    }
-    void TimDuongThoatKhoiDay()
-    {
-        TurnOffAcid.Instance.turnOff = true;
-    }
-    void DaThoatKhoiKhuVucAcid()
-    {
-
-    }
+    void TimDuongThoatKhoiDay() => TurnOffAcid.Instance.turnOff = true;
+    void DaThoatKhoiKhuVucAcid() => TurnOffAcid.Instance.turnOff = true;
 }

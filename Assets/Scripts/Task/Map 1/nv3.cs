@@ -18,7 +18,7 @@ public class nv3 : MonoBehaviour, PlayerInterface
         if (CraftDoor.Instance.OpenDoor && !isUseArmor)
         {
             isUseArmor = true;
-            CutsceneManager.Instance.PlayCutscene(0);
+            CutsceneManager.Instance.PlayCutscene(1);
         }
     }
 }
