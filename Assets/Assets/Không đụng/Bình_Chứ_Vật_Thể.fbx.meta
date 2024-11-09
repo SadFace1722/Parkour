@@ -1,0 +1,277 @@
+fileFormatVersion: 2
+guid: 65d5ee8baa690b9408655920b7358fd8
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: UV01
+    second: {fileID: 2100000, guid: c116db0b96a920447b8c9d02dc372e77, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: UV03
+    second: {fileID: 2100000, guid: 26a7e584b9196ac41ab01804cb476c4e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: UV04
+    second: {fileID: 2100000, guid: f42c14d6ccf16cc4584c5edd4a7da615, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: UV04.001
+    second: {fileID: 2100000, guid: 3c0dd5e2d3025434a836be15613498cd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: UV05
+    second: {fileID: 2100000, guid: 55210d4c14418e343a9fa5c9e1b7d043, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: UV08
+    second: {fileID: 2100000, guid: e95d545b0a1f14a418a3911f07104a73, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_0-alien2.jpgmat
+    second: {fileID: 2100000, guid: 0f1d3bb33d631d14d854cd2e7c483121, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_1-alien2.jpgmat
+    second: {fileID: 2100000, guid: 727681c824df12043a7843b008b2496f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_10-alien2.jpgmat
+    second: {fileID: 2100000, guid: 4e8218464d2ea5a4286fc0730a1e4d36, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_11-alien2.jpgmat
+    second: {fileID: 2100000, guid: b3e0c0be256a6074abd3f803a5fa54d6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_12-alien2.jpgmat
+    second: {fileID: 2100000, guid: 30847cdf06142664c9272d004035a4a5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_13-alien2.jpgmat
+    second: {fileID: 2100000, guid: 0d670a274b0031742ac1390929e4e813, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_14-alien2.jpgmat
+    second: {fileID: 2100000, guid: 8987b756d7b471849b34fa5ee960b9d1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_15-alien2.jpgmat
+    second: {fileID: 2100000, guid: 4db793d8f472f4f43896b0a77195979f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_16-alien2.jpgmat
+    second: {fileID: 2100000, guid: ad3fa9137890c814583f179f61d0d72e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_17-alien2.jpgmat
+    second: {fileID: 2100000, guid: 43d3d7b83238820438ffef8bebdbc818, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_2-alien2.jpgmat
+    second: {fileID: 2100000, guid: 1462dd968699baa4b8c4bb9d4c695c95, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_3-alien2.jpgmat
+    second: {fileID: 2100000, guid: 7bc4e1c3156cf144ab622c2b5c927c3f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_4-alien2.jpgmat
+    second: {fileID: 2100000, guid: edc99ed4f391927429a4972678a47c7f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_5-alien2.jpgmat
+    second: {fileID: 2100000, guid: cfb15669740f30e44868d86f8fedf408, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_6-alien2.jpgmat
+    second: {fileID: 2100000, guid: 37efd545e49911a4eb7eebf1791a6d21, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_7-alien2.jpgmat
+    second: {fileID: 2100000, guid: 8686f028b57930f4a9635edfdc7b3a09, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_8-alien2.jpgmat
+    second: {fileID: 2100000, guid: c8c08ce64893bd0428c7f6473a61865c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_9-alien2.jpgmat
+    second: {fileID: 2100000, guid: 81d13eb2f0ea802478aa7590e6115622, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Capsule_low_UV01_BaseColor
+    second: {fileID: 2800000, guid: 2f7e671d7f304bf41aaff0b29214a1b6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Capsule_low_UV01_Normal
+    second: {fileID: 2800000, guid: 5a299ab5a1c9d044787d32b71811491f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Capsule_low_UV02_BaseColor
+    second: {fileID: 2800000, guid: 4435147184f3b9541b3ed32b355c32fb, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Capsule_low_UV03_BaseColor
+    second: {fileID: 2800000, guid: 972787b7123cb334f8b3149c82526079, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Capsule_low_UV03_Normal
+    second: {fileID: 2800000, guid: 6f84837b4a77b4c498f74f05e06ebc32, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Capsule_low_UV03_Roughness
+    second: {fileID: 2800000, guid: 8e23b0abc4ed44d428334bd987ba8f13, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Capsule_low_UV04_BaseColor
+    second: {fileID: 2800000, guid: 2b4000407020f9643b82f92632c6c81e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Capsule_low_UV04_Normal
+    second: {fileID: 2800000, guid: da6782f695d738d42986383e080ce9ad, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Capsule_low_UV04_Roughness
+    second: {fileID: 2800000, guid: b36f89b30c141e3408e21ac0eea322ce, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: alien2
+    second: {fileID: 2800000, guid: 2b4c4623cd059314bb703acc4bf6e495, type: 3}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
