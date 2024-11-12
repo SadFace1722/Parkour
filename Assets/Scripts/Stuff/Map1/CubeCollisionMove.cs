@@ -5,11 +5,12 @@ public class CubeCollisionMove : MonoBehaviour
 {
     public float checkRadius = 5f;
     public LayerMask collisionLayer;
-    public float moveDistance = 5f;   // Khoảng cách di chuyển sang trái hoặc phải
+    public float moveDistance = 5f;   // Khoảng cách di chuyển
     public float moveDuration = 1f;   // Thời gian di chuyển đến vị trí mới
+    public bool moveLeftRight = true; // Di chuyển trái-phải
+    public bool moveUpDown = false;   // Di chuyển lên-xuống
 
     private Vector3 originalPosition;
-    public bool moveLeft = true;  // Biến chọn hướng di chuyển: true cho trái, false cho phải
     private bool hasMovedOnce = false; // Biến để kiểm tra xem Cube đã di chuyển một lần hay chưa
 
     private void Start()
@@ -47,7 +48,18 @@ public class CubeCollisionMove : MonoBehaviour
     {
         hasMovedOnce = true; // Đánh dấu Cube đã di chuyển lần đầu tiên
 
-        Vector3 targetPosition = originalPosition + (moveLeft ? Vector3.left : Vector3.right) * moveDistance;
+        // Tính toán vị trí đích dựa trên hướng di chuyển
+        Vector3 targetPosition = originalPosition;
+
+        if (moveLeftRight)
+        {
+            targetPosition += Vector3.right * moveDistance;
+        }
+        else if (moveUpDown)
+        {
+            targetPosition += Vector3.up * moveDistance;
+        }
+
         float elapsedTime = 0f;
 
         // Di chuyển đến vị trí mục tiêu
@@ -57,7 +69,24 @@ public class CubeCollisionMove : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        transform.position = targetPosition; // Đặt Cube tại vị trí mục tiêu mà không quay lại
+
+        transform.position = targetPosition; // Đặt Cube tại vị trí mục tiêu
+
+        // Nếu di chuyển lên-xuống, di chuyển Cube quay lại vị trí ban đầu
+        if (moveUpDown)
+        {
+            yield return new WaitForSeconds(0.5f); // Chờ một khoảng thời gian trước khi quay lại
+            elapsedTime = 0f;
+
+            while (elapsedTime < moveDuration)
+            {
+                transform.position = Vector3.Lerp(targetPosition, originalPosition, elapsedTime / moveDuration);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            transform.position = originalPosition; // Đặt Cube về vị trí ban đầu
+        }
     }
 
     private void OnDrawGizmos()
