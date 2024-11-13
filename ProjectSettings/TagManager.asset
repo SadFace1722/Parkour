@@ -7,6 +7,7 @@ TagManager:
   - Gun
   - Monster
   - Acid
+  - EndPoint
   layers:
   - Default
   - TransparentFX
