@@ -15,22 +15,34 @@ public class PlayerController : MonoBehaviour
     public GameObject Player, Armor, Shotgun;
     public float currentHealth = 100;
     public Image HealImage, Crosshair;
+    public Image damageImage;  // Hình ảnh khi bị tấn công
+    public Image deathImage;   // Hình ảnh khi chết
     float x, z;
 
     public bool IsParkour = true;
+    private bool isTakingDamage;
+    private float damageTimer;
+    private Color damageColor = new Color(1f, 0f, 0f, 0.5f); // Màu đỏ nhấp nháy khi nhận sát thương
+    private Color deathColor = new Color(1f, 0f, 0f, 1f);    // Màu đỏ khi chết
+    private float damageFadeDuration = 0.1f;   // Thời gian hiển thị khi nhận sát thương
+    private float deathFadeSpeed = 1.5f;       // Tốc độ hiển thị khi chết
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
         }
-
     }
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
         canControll = true;
         ToggleCamera();
+
+        if (damageImage != null) damageImage.color = Color.clear; // Ẩn ảnh sát thương
+        if (deathImage != null) deathImage.color = Color.clear;   // Ẩn ảnh chết
     }
 
     void Update()
@@ -50,18 +62,33 @@ public class PlayerController : MonoBehaviour
             HealImage.fillAmount = Mathf.Lerp(HealImage.fillAmount, currentHealth / 100f, Time.deltaTime * 5f);
         }
 
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && !isDead)
         {
-            StartCoroutine(WaitBeforeRespawn(2f));
             isDead = true;
+            StartCoroutine(HandleDeathEffect());
+            StartCoroutine(WaitBeforeRespawn(1.5f)); // Gọi Coroutine để hồi sinh
         }
-        else
+        else if (currentHealth > 0)
         {
             isDead = false;
+            StopCoroutine(HandleDeathEffect());  // Ngừng hiệu ứng chết nếu hồi sinh
         }
 
         canControll = currentHealth > 0;
         isGrounded = controller.isGrounded;
+
+        if (isTakingDamage && damageImage != null)
+        {
+            // Kiểm soát thời gian nhấp nháy ảnh sát thương
+            damageTimer -= Time.deltaTime;
+            damageImage.color = damageColor;
+
+            if (damageTimer <= 0)
+            {
+                isTakingDamage = false;
+                damageImage.color = Color.clear; // Ẩn ảnh khi hết thời gian
+            }
+        }
 
         if (!isGrounded && ver.y <= 0f && !isJumping)
         {
@@ -86,7 +113,7 @@ public class PlayerController : MonoBehaviour
             canControll = true;
             ToggleCamera(); // Bật camera theo `IsParkour` khi hết cutscene
 
-            if (canControll&&!isDead)
+            if (canControll && !isDead)
             {
                 HandleInput();
                 HandleMove();
@@ -115,43 +142,29 @@ public class PlayerController : MonoBehaviour
     {
         if (IsParkour)
         {
-            // Lấy hướng di chuyển từ Camera chính (Third-Person)
             camF = cam.transform.forward;
             camR = cam.transform.right;
-
-            // Bỏ phần trục Y để chỉ lấy hướng ngang
             camF.y = 0;
             camR.y = 0;
-
-            // Tính toán hướng di chuyển
             hor = (x * camR + z * camF).normalized;
 
             if (hor.sqrMagnitude > 0.1f)
             {
-                // Xoay nhân vật về hướng di chuyển
                 Quaternion Rota = Quaternion.LookRotation(hor);
                 transform.rotation = Quaternion.Slerp(transform.rotation, Rota, moveSpeed * Time.deltaTime);
-
-                // Di chuyển nhân vật theo hướng cam
                 controller.Move(hor * moveSpeed * Time.deltaTime);
             }
         }
         else
         {
-            // Lấy hướng di chuyển từ FPS Camera
             camF = fpsCam.transform.forward;
             camR = fpsCam.transform.right;
-
-            // Bỏ phần trục Y để chỉ lấy hướng ngang
             camF.y = 0;
             camR.y = 0;
-
-            // Tính toán hướng di chuyển
             hor = (x * camR + z * camF).normalized;
 
             if (hor.sqrMagnitude > .1f)
             {
-                // Di chuyển nhân vật theo hướng cam FPS
                 controller.Move(hor * moveSpeed * Time.deltaTime);
             }
         }
@@ -183,11 +196,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-
     public void TakeDamage(float amount)
     {
         currentHealth = Mathf.Max(0, currentHealth - amount);
+
+        if (damageImage != null)
+        {
+            isTakingDamage = true;
+            damageTimer = damageFadeDuration; // Reset bộ đếm thời gian nhấp nháy
+        }
     }
 
     public void TakeHeal(float amount)
@@ -195,18 +212,46 @@ public class PlayerController : MonoBehaviour
         currentHealth = Mathf.Min(100, currentHealth + amount);
     }
 
-    private IEnumerator WaitBeforeRespawn(float delayTime)
+    private IEnumerator HandleDeathEffect()
+    {
+        if (deathImage == null) yield break;
+
+        float alpha = 0;
+        while (alpha < 1)
+        {
+            alpha += Time.deltaTime * deathFadeSpeed;
+            deathImage.color = new Color(deathColor.r, deathColor.g, deathColor.b, alpha);
+            yield return null;
+        }
+    }
+
+    IEnumerator WaitBeforeRespawn(float delayTime)
     {
         yield return new WaitForSeconds(delayTime); // Đợi 1.5 giây
-        GameManager.Instance.LoadGameProgress();
-        currentHealth = PlayerController.Instance.currentHealth;  // Lấy currentHealth từ PlayerController
-        transform.position = GameManager.Instance.playerTransform.position;
+
+        // Kiểm tra nếu GameManager và playerTransform hợp lệ
+        if (GameManager.Instance != null && GameManager.Instance.playerTransform != null)
+        {
+            GameManager.Instance.LoadGameProgress();
+            transform.position = GameManager.Instance.playerTransform.position; // Đặt lại vị trí
+        }
+
+        // Reset trạng thái khi hồi sinh
+        currentHealth = 100; // Khôi phục sức khỏe
+        isDead = false;
+        canControll = true; // Cho phép điều khiển lại
+
+        // Ẩn hiệu ứng chết
+        if (deathImage != null)
+        {
+            deathImage.color = Color.clear;
+        }
+
         Debug.Log("Player has respawned at save point.");
     }
 
     void ToggleCamera()
     {
-        // Kiểm tra nếu đang trong cutscene thì tắt tất cả camera
         if (CutsceneManager.Instance.isCutscenePlaying)
         {
             fpsCamera.SetActive(false);
@@ -215,7 +260,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // Bật/tắt camera theo trạng thái IsParkour khi không trong cutscene
             if (IsParkour)
             {
                 fpsCamera.SetActive(false);

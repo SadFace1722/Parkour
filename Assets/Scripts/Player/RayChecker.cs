@@ -10,10 +10,10 @@ public class RayChecker : MonoBehaviour
     public RaycastHit hit, hitBlock;
     [SerializeField] LayerMask objectLayer, blockLayer;
     [SerializeField] float disray = 5f, disToObject = 2f, dis = 2f;
+    Animator anim;
 
-    
-    public float shootCooldown = 1.0f;  
-    private float lastShootTime = 0f;  
+    public float shootCooldown = 1.0f;
+    private float lastShootTime = 0f;
 
     private void Awake()
     {
@@ -21,8 +21,8 @@ public class RayChecker : MonoBehaviour
         {
             Instance = this;
         }
+        anim = GameObject.Find("Shotgun").GetComponent<Animator>();
     }
-
     void Update()
     {
         if (RayCheck())
@@ -36,15 +36,19 @@ public class RayChecker : MonoBehaviour
                     Debug.Log("Interact được gọi với: " + hit.collider.gameObject.name);
                 }
             }
-            
 
-            if (!PlayerController.Instance.IsParkour&&Input.GetButtonDown("Fire1") && Time.time >= lastShootTime + shootCooldown)
+
+            if (!PlayerController.Instance.IsParkour && Input.GetButtonDown("Fire1") && Time.time >= lastShootTime + shootCooldown)
             {
                 PlayerInterface inter = hit.collider.gameObject.GetComponent<PlayerInterface>();
+                if (anim != null)
+                {
+                    anim.SetTrigger("Shoot");  // Đảm bảo trigger này có trong Animator
+                }
                 if (inter != null)
                 {
                     inter.Shoot();
-                    lastShootTime = Time.time;  
+                    lastShootTime = Time.time;
                     Debug.Log("Shoot được gọi với: " + hit.collider.gameObject.name);
                 }
             }
