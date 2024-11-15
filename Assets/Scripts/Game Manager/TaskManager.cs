@@ -46,7 +46,7 @@ public class TaskManager : MonoBehaviour
         tasks.Add(new Task(2, "Tìm cách tắt Acid.", TimCachTatAcid, DaTatDuocAcid, () => TurnOffAcid.Instance.turnOff));
         tasks.Add(new Task(2, "Tiêu diệt quái vật.", BatDauTieuDietAcidAlien, DaTieuDietXongAcidAlien, () => KillCount >= 5));
         tasks.Add(new Task(2, "Tìm đường thoát khỏi đây.", TimDuongThoatKhoiDay, DaThoatKhoiKhuVucAcid, () => OpenDoor.Instance.IsOpenDoor));
-
+        tasks.Add(new Task(2, "Tìm cách tắt lazer.", TieuDietQuaiVat, TatDuocLazer, () => GameLaser.Instance.isTurnOff));
         if (tasks.Count > 0)
         {
             if (CurrentIndex == 0) // Nếu là lần đầu tiên chơi
@@ -199,4 +199,7 @@ public class TaskManager : MonoBehaviour
 
     void TimDuongThoatKhoiDay() => TurnOffAcid.Instance.turnOff = true;
     void DaThoatKhoiKhuVucAcid() => TurnOffAcid.Instance.turnOff = true;
+
+    void TieuDietQuaiVat() => Debug.Log("");
+    void TatDuocLazer() => Debug.Log("");
 }

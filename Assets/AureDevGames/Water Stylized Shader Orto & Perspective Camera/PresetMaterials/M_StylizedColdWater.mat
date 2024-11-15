@@ -24,11 +24,10 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: 8eef88ae773ef5f4dbe4da56da89303b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
+  m_ValidKeywords:
   - _PERSPECTIVE
   - _REFLECTIONS
-  - _WORLD_SPACE_UV
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -53,7 +52,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTexture:
-        m_Texture: {fileID: 2800000, guid: b3e7844cbaefa474c8d764f3afa2d494, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PlanarReflectionTexture:
@@ -139,7 +138,7 @@ Material:
     - _SurfaceFoamSpeed: 0.2
     - _SurfaceFoamTiling: 8.79
     - _TileSize: 200
-    - _WORLD_SPACE_UV: 1
+    - _WORLD_SPACE_UV: 0
     - _WaterAlpha: 0.896
     - _WaterMetallic: 0.577
     - _WaterSmoothness: 0.581
@@ -153,7 +152,7 @@ Material:
     - _CaveOffset: {r: -0.45, g: 0, b: 0, a: 0}
     - _CaveScale: {r: 0.01, g: 0.01, b: 0, a: 0}
     - _CaveSecondaryColor: {r: 0, g: 0, b: 0, a: 0}
-    - _DeepColor: {r: 1, g: 1, b: 1, a: 1}
+    - _DeepColor: {r: 0, g: 1, b: 0.7180078, a: 1}
     - _FoamUVsOffset: {r: 1, g: 1, b: 0, a: 0}
     - _FresnelColor: {r: 2.670157, g: 2.670157, b: 2.670157, a: 0}
     - _HorizonColor: {r: 0, g: 0, b: 0, a: 0}
@@ -162,7 +161,7 @@ Material:
     - _SecondaryFoamColor: {r: 0.18735576, g: 1, b: 0, a: 0}
     - _ShallowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 0.78616345, g: 0.78616345, b: 0.78616345, a: 0.41568628}
-    - _SurfaceFoamColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SurfaceFoamColor: {r: 0, g: 0, b: 0, a: 1}
     - _TopColor: {r: 0, g: 0.17848217, b: 0.5622641, a: 0.44705883}
     - _UV: {r: 0, g: 0, b: 0, a: 0}
     - _UVRipples: {r: 0, g: 0, b: 0, a: 0}

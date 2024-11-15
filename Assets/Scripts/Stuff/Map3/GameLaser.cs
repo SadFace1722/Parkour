@@ -7,7 +7,7 @@ public class GameLaser : MonoBehaviour
     public static GameLaser Instance;
     private List<string> correctOrder = new List<string> { "Yellow", "Blue", "Red" }; // Thứ tự đúng cần nhấn
     public int currentStep = 0; // Theo dõi bước hiện tại của người chơi
-
+    public bool isTurnOff;
     public GameObject[] lasers; // Mảng các laser cần vô hiệu hóa khi đúng thứ tự
 
     private void Awake()
@@ -37,6 +37,7 @@ public class GameLaser : MonoBehaviour
         {
             currentStep++; // Bước tiếp theo nếu đúng là Red
             Debug.Log("Red pressed correctly!");
+            isTurnOff = true;
             DisableLasers(); // Nếu đúng hết, vô hiệu hóa laser
             return true;
         }
@@ -52,6 +53,7 @@ public class GameLaser : MonoBehaviour
     // Reset thứ tự nếu sai
     public void ResetOrder()
     {
+        isTurnOff = false;
         currentStep = 0;
         Debug.Log("Order Reset.");
     }

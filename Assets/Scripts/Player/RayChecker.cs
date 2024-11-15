@@ -21,10 +21,19 @@ public class RayChecker : MonoBehaviour
         {
             Instance = this;
         }
-        anim = GameObject.Find("Shotgun").GetComponent<Animator>();
+
     }
     void Update()
     {
+        if (anim == null)
+        {
+            GameObject shotgun = GameObject.Find("Shotgun");
+
+            if (shotgun != null)
+            {
+                anim = shotgun.GetComponent<Animator>();
+            }
+        }
         if (RayCheck())
         {
             if (Input.GetKeyDown(KeyCode.E))

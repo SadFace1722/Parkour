@@ -75,9 +75,9 @@ public class GameManager : MonoBehaviour
         int savePointID = PlayerPrefs.GetInt("SavePointID", 0);
         float playerHealth = PlayerPrefs.GetFloat("PlayerHealth", 100);
         Vector3 playerPosition = new Vector3(
-            PlayerPrefs.GetFloat("PlayerPosX", 0),
-            PlayerPrefs.GetFloat("PlayerPosY", 0),
-            PlayerPrefs.GetFloat("PlayerPosZ", 0)
+            PlayerPrefs.GetFloat("PlayerPosX", 58f),
+            PlayerPrefs.GetFloat("PlayerPosY", 102f),
+            PlayerPrefs.GetFloat("PlayerPosZ", 128f)
         );
         int currentTaskIndex = PlayerPrefs.GetInt("CurrentTaskIndex", 0);
 

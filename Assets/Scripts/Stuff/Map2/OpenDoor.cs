@@ -16,7 +16,7 @@ public class OpenDoor : MonoBehaviour, PlayerInterface
     }
     private void Start()
     {
-        anim = GetComponent<Animator>();
+        anim = transform.parent.GetComponent<Animator>();
     }
     private void Update()
     {
