@@ -16,6 +16,12 @@ public class CubeBlue : MonoBehaviour, PlayerInterface
     }
     public void Interact()
     {
+        if (GameLaser.Instance.isGameOver)
+        {
+            Debug.Log("isGameOver = " + GameLaser.Instance.isGameOver);
+
+            return;
+        }
         // Khi người chơi nhấn vào cube xanh
         if (GameLaser.Instance.CheckOrder("Blue"))
         {
