@@ -10,7 +10,8 @@ public class KeyPad : MonoBehaviour
 
 
 
-    private string Answer = "361844"; // Mã đúng để mở cửa
+
+    private string Answer = "321844"; // Mã đúng để mở cửa
 
 
 
@@ -24,11 +25,13 @@ public class KeyPad : MonoBehaviour
         if (Ans.text == Answer)
         {
             Ans.text = "Nhập đúng";
+            BunkerDoor.Instance.isOpen = true;
 
         }
         else
         {
             Ans.text = "Nhập Sai";
+            BunkerDoor.Instance.isOpen = false;
         }
     }
 
