@@ -12,7 +12,7 @@ public class Boss : MonoBehaviour
     public float grado;
     public GameObject target;
     public bool atacando;
-    public RangoBoss rango;
+    //public RangoBoss rango;
     public float speed;
     public GameObject[] hit;
     public int hit_Select;
