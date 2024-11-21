@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: 7b1696b12666ec44a9f2c997e0ccfbba
+AssetOrigin:
+  serializedVersion: 1
+  productId: 20838
+  packageName: Alien Character
+  packageVersion: 4.3.4
+  assetPath: Assets/alien character/animation/Alien@idle.FBX
+  uploadId: 10024
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
@@ -387,8 +394,8 @@ ModelImporter:
   externalObjects: {}
   materials:
     materialImportMode: 1
-    materialName: 0
-    materialSearch: 1
+    materialName: 2
+    materialSearch: 2
     materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
@@ -657,10 +664,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 20838
-  packageName: Alien Character
-  packageVersion: 4.3.4
-  assetPath: Assets/alien character/animation/Alien@idle.FBX
-  uploadId: 10024
