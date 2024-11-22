@@ -5,23 +5,33 @@ public class PadInteraction : MonoBehaviour, PlayerInterface
 {
     [SerializeField] private GameObject PassWordCanvas; // Canvas nhập mật khẩu
     [SerializeField] private CharacterController playerController;
+    [SerializeField] private MonoBehaviour firstPersonLook;
+    [SerializeField] private MonoBehaviour thirdPersonLook;
     private bool isActive;
 
     public void Interact()
     {
-   
         isActive = !isActive;
 
         if (isActive)
         {
             if (playerController != null)
             {
-                playerController.enabled = false;
+                playerController.enabled = false; 
             }
 
-           
-            Cursor.lockState = CursorLockMode.Confined; 
-            Cursor.visible = true; 
+            if (firstPersonLook != null)
+            {
+                firstPersonLook.enabled = false; 
+            }
+
+            if (thirdPersonLook != null)
+            {
+                thirdPersonLook.enabled = false; 
+            }
+
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
         }
         else
         {
@@ -30,9 +40,18 @@ public class PadInteraction : MonoBehaviour, PlayerInterface
                 playerController.enabled = true;
             }
 
-            
+            if (firstPersonLook != null)
+            {
+                firstPersonLook.enabled = true; 
+            }
+
+            if (thirdPersonLook != null)
+            {
+                thirdPersonLook.enabled = true; 
+            }
+
             Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = false; 
+            Cursor.visible = false;
         }
     }
 
