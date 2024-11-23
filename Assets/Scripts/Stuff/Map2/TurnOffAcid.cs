@@ -16,7 +16,7 @@ public class TurnOffAcid : MonoBehaviour, PlayerInterface
     }
     private void Start()
     {
-        anim = transform.GetChild(0).GetComponent<Animator>();
+        anim = GetComponent<Animator>();
     }
     private void LateUpdate()
     {
