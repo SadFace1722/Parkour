@@ -8,6 +8,7 @@ TagManager:
   - Monster
   - Acid
   - EndPoint
+  - WayPoints
   layers:
   - Default
   - TransparentFX
