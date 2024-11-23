@@ -100,11 +100,6 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
 
         CheckIfUsingNavMeshLink();
         UpdateWalkingAnimation();
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            TakeDamage(15);
-        }
     }
 
     private void AttackPlayer()
