@@ -121,6 +121,10 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
     public void TakeDamage(float damage)
     {
         health -= damage;
+
+        // Kích hoạt animation "Hurt"
+        anim.SetTrigger("Hurt");
+
         if (health <= 0 && !isDead) // Kiểm tra chết
         {
             Die();
