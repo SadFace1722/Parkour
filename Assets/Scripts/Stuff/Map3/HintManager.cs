@@ -6,45 +6,62 @@ public class HintManager : MonoBehaviour
     public Text yellowText; // Tham chiếu đến Text "Yellow"
     public Text blueText;   // Tham chiếu đến Text "Blue"
     public Text redText;    // Tham chiếu đến Text "Red"
-
-    private bool hasShownHint = false; // Biến để kiểm tra xem gợi ý đã hiển thị chưa
+    public float hintDuration = 5f; // Thời gian hiển thị gợi ý
+    private bool isPlayerInZone = false; // Kiểm tra xem người chơi có trong khu vực hay không
+    private bool hasShownHint = false;   // Đảm bảo gợi ý chỉ hiển thị một lần khi nhấn F
 
     void Start()
     {
         // Đảm bảo các chữ bị tắt khi trò chơi bắt đầu
-        yellowText.gameObject.SetActive(false);
-        blueText.gameObject.SetActive(false);
-        redText.gameObject.SetActive(false);
+        HideAllHints();
     }
 
     void Update()
     {
-        // Khi nhấn phím F và gợi ý chưa hiển thị
-        if (Input.GetKeyDown(KeyCode.F) && !hasShownHint)
+        // Khi người chơi trong khu vực và nhấn phím F, hiển thị gợi ý
+        if (isPlayerInZone && Input.GetKeyDown(KeyCode.F) && !hasShownHint)
         {
-            ShowHint(); // Hiển thị gợi ý
-            hasShownHint = true; // Đảm bảo gợi ý chỉ hiển thị một lần
+            ShowHint();
+            hasShownHint = true; // Ngăn gợi ý hiển thị lại nếu đã nhấn
         }
     }
 
     void ShowHint()
     {
-        // Hiển thị các chữ
+        // Hiển thị tất cả các chữ
         yellowText.gameObject.SetActive(true);
         blueText.gameObject.SetActive(true);
         redText.gameObject.SetActive(true);
 
-        // Ẩn chữ sau 5 giây
-        StartCoroutine(HideHintAfterDelay(1f));
+        // Ẩn chữ sau thời gian đặt trước
+        Invoke("HideAllHints", hintDuration);
     }
 
-    System.Collections.IEnumerator HideHintAfterDelay(float delay)
+    void HideAllHints()
     {
-        yield return new WaitForSeconds(delay);
-
         // Tắt tất cả các chữ
         yellowText.gameObject.SetActive(false);
         blueText.gameObject.SetActive(false);
         redText.gameObject.SetActive(false);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // Kiểm tra nếu người chơi vào khu vực
+        if (other.CompareTag("Player"))
+        {
+            isPlayerInZone = true; // Bật cờ
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        // Kiểm tra nếu người chơi rời khỏi khu vực
+        if (other.CompareTag("Player"))
+        {
+            isPlayerInZone = false; // Tắt cờ
+            hasShownHint = false;   // Cho phép hiển thị lại khi người chơi quay lại
+            HideAllHints();         // Ẩn gợi ý ngay khi rời khu vực
+        }
     }
 }
