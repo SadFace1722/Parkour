@@ -16,7 +16,7 @@ public class DamageBox : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PlayerController.Instance.TakeDamage(10);
+            PlayerController.Instance.TakeDamage(50);
         }
     }
     void TurnOffBox()
