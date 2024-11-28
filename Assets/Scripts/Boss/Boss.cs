@@ -11,9 +11,9 @@ public class Boss : MonoBehaviour, PlayerInterface
     public float bulletSpeed = 20f;
     public float accuracy = 0.5f;
     public GameObject bulletPrefab;
-    public GameObject specialBulletPrefab; 
+    public GameObject specialBulletPrefab;
     public Transform firePoint;
-    public Transform firePointLeft; 
+    public Transform firePointLeft;
     public Transform firePointRight;
     public Transform player;
 
@@ -21,37 +21,48 @@ public class Boss : MonoBehaviour, PlayerInterface
     private float nextFireTime = 0f;
     private bool isPlayerInRange = false;
     private bool isAttacking = false;
-    bool isDead;
-    Animator anim;
+    private bool isDead = false;
 
-    // Biến để theo dõi lượng máu đã mất
-    public float damageTaken = 0f;
+    // Shield variables
+    private bool isShieldActive = false;
+    public float shieldMaxHealth = 100f;   // Máu tối đa của khiên
+    private float shieldCurrentHealth;     // Máu hiện tại của khiên
+    public float shieldActivationChance = 0.2f; // Xác suất kích hoạt khiên (20%)
 
-    int LayerAttack, LayerSKill1;
+    // Cooldown variables
+    public float shieldCooldown = 10f;     // Thời gian hồi chiêu của khiên
+    private bool shieldOnCooldown = false; // Trạng thái đang hồi chiêu
+
+    private float damageTaken = 0f;        // Theo dõi lượng máu đã mất
+
+    public Animator anim, animSkill2;
+    private int LayerAttack, LayerSkill1;
 
     void Start()
     {
         anim = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
-        player = GameObject.FindWithTag("Player").transform;
+        player = GameObject.FindWithTag("Player")?.transform;
+
+        if (player == null)
+        {
+            Debug.LogError("Player not found! Ensure the player has the correct tag.");
+            enabled = false;
+            return;
+        }
+
         LayerAttack = anim.GetLayerIndex("Attack");
-        LayerSKill1 = anim.GetLayerIndex("Skill1");
+        LayerSkill1 = anim.GetLayerIndex("Skill1");
 
         InvokeRepeating("CheckHealthAndUpdate", 0f, 1f);
     }
 
     void Update()
     {
-        Die();
-
-        if (isDead)
-        {
-            return;
-        }
+        if (isDead) return;
 
         Idle();
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
         isPlayerInRange = distanceToPlayer <= attackRange;
 
         if (isPlayerInRange)
@@ -60,19 +71,19 @@ public class Boss : MonoBehaviour, PlayerInterface
         }
         else
         {
-            navMeshAgent.SetDestination(transform.position);
+            navMeshAgent.ResetPath();
         }
 
         if (damageTaken >= 20f)
         {
             anim.SetTrigger("Skill1");
-            damageTaken = 0f; 
+            damageTaken = 0f;
             anim.SetLayerWeight(LayerAttack, 0);
-            anim.SetLayerWeight(LayerSKill1, 1);
+            anim.SetLayerWeight(LayerSkill1, 1);
             Invoke("TurnOffSkill", 2f);
         }
 
-        if (isPlayerInRange && Time.time >= nextFireTime && !isAttacking && anim.GetCurrentAnimatorStateInfo(LayerAttack).normalizedTime >= 1)
+        if (isPlayerInRange && Time.time >= nextFireTime && !isAttacking)
         {
             isAttacking = true;
             anim.SetTrigger("Attack");
@@ -81,40 +92,93 @@ public class Boss : MonoBehaviour, PlayerInterface
         RotateTowardsPlayer();
     }
 
+    void CheckHealthAndUpdate()
+    {
+        if (health <= 0 && !isDead)
+        {
+            isDead = true;
+            Die();
+        }
+    }
+
     void TurnOffSkill()
     {
         anim.SetLayerWeight(LayerAttack, 1);
-        anim.SetLayerWeight(LayerSKill1, 0);
-        isAttacking = false; 
+        anim.SetLayerWeight(LayerSkill1, 0);
+        isAttacking = false;
     }
-
 
     void ChasePlayer()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        if (distanceToPlayer > safeDistance)
+        if (Vector3.Distance(transform.position, player.position) > safeDistance)
         {
             navMeshAgent.SetDestination(player.position);
         }
         else
         {
-            navMeshAgent.SetDestination(transform.position);
+            navMeshAgent.ResetPath();
         }
     }
     public void Shoot()
     {
-        TakeDamage(5);
+        TakeDamage(Random.Range(5, 10));
     }
     public void TakeDamage(float amount)
     {
+        if (isShieldActive)
+        {
+            shieldCurrentHealth -= amount; // Giảm máu khiên
+            Debug.Log("Shield health: " + shieldCurrentHealth);
+
+            if (shieldCurrentHealth <= 0) // Khi khiên hết máu
+            {
+                DeactivateShield();
+            }
+            return; // Không nhận sát thương vào máu chính khi có khiên
+        }
+
+        // Kích hoạt khiên với xác suất nhất định và nếu không đang trong cooldown
+        if (!shieldOnCooldown && Random.value < shieldActivationChance && !isShieldActive)
+        {
+            ActivateShield();
+            return;
+        }
+
+        // Nếu không có khiên, boss nhận sát thương bình thường
         health -= amount;
         damageTaken += amount;
         anim.SetTrigger("Hurt2");
-        if (health <= 0)
+
+        if (health <= 0 && !isDead)
         {
             isDead = true;
+            Die();
         }
+    }
+
+    void ActivateShield()
+    {
+        isShieldActive = true;
+        shieldCurrentHealth = shieldMaxHealth; // Đặt lại máu của khiên
+        shieldOnCooldown = true; // Bắt đầu cooldown
+        Debug.Log("Shield activated!");
+        animSkill2.SetBool("Skill2", true);
+    }
+
+    void DeactivateShield()
+    {
+        isShieldActive = false;
+        Debug.Log("Shield deactivated!");
+        animSkill2.SetBool("Skill2", false);
+
+        // Bắt đầu hồi chiêu khi khiên bị phá
+        Invoke("ResetShieldCooldown", shieldCooldown);
+    }
+
+    void ResetShieldCooldown()
+    {
+        shieldOnCooldown = false; // Khiên đã sẵn sàng kích hoạt lại
+        Debug.Log("Shield cooldown reset! Ready to activate again.");
     }
 
     void Idle()
@@ -125,18 +189,23 @@ public class Boss : MonoBehaviour, PlayerInterface
     void Die()
     {
         anim.SetBool("Death", isDead);
+        navMeshAgent.isStopped = true;
     }
 
-
+    void RotateTowardsPlayer()
+    {
+        Vector3 directionToPlayer = player.position - transform.position;
+        directionToPlayer.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(directionToPlayer);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 5f);
+    }
     public void Fire()
     {
         nextFireTime = Time.time + 1f / fireRate;
         isAttacking = false;
 
         Vector3 directionToPlayer = (player.position - firePoint.position).normalized;
-
         float deviationAmount = 1.0f - accuracy;
-
         Vector3 deviationVector = new Vector3(
             Random.Range(-deviationAmount, deviationAmount),
             Random.Range(-deviationAmount / 2, deviationAmount / 2),
@@ -144,7 +213,6 @@ public class Boss : MonoBehaviour, PlayerInterface
         );
 
         Vector3 firingDirection = (directionToPlayer + deviationVector).normalized;
-
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
         bulletRb.velocity = firingDirection * bulletSpeed;
@@ -153,33 +221,20 @@ public class Boss : MonoBehaviour, PlayerInterface
     public void FireSpecialBullet()
     {
         nextFireTime = Time.time + 1f / fireRate;
-
         FireBulletFrom(firePointLeft);
-
         FireBulletFrom(firePointRight);
     }
 
     void FireBulletFrom(Transform firePoint)
     {
         Vector3 directionToPlayer = (player.position - firePoint.position).normalized;
-
         for (int i = -1; i <= 1; i++)
         {
             Vector3 firingDirection = directionToPlayer + firePoint.right * i * 0.5f;
             firingDirection.Normalize();
-
             GameObject bullet = Instantiate(specialBulletPrefab, firePoint.position, firePoint.rotation);
             Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
             bulletRb.velocity = firingDirection * bulletSpeed;
         }
-    }
-
-    void RotateTowardsPlayer()
-    {
-        Vector3 directionToPlayer = player.position - transform.position;
-        directionToPlayer.y = 0;
-
-        Quaternion rotation = Quaternion.LookRotation(directionToPlayer);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 5f);
     }
 }
