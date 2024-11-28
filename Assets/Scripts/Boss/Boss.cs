@@ -138,7 +138,7 @@ public class Boss : MonoBehaviour, PlayerInterface
         }
 
         // Kích hoạt khiên với xác suất nhất định và nếu không đang trong cooldown
-        if (!shieldOnCooldown && Random.value < shieldActivationChance && !isShieldActive)
+        if (!shieldOnCooldown && Random.value < shieldActivationChance && !isShieldActive && !isDead)
         {
             ActivateShield();
             return;
@@ -151,6 +151,7 @@ public class Boss : MonoBehaviour, PlayerInterface
 
         if (health <= 0 && !isDead)
         {
+            health = 0;
             isDead = true;
             Die();
         }

@@ -125,7 +125,7 @@ public class StartPoint : MonoBehaviour
                 if (player != null)
                 {
                     player.TakeDamage(damageAmount);
-                    Debug.Log("Player Health: " + player.currentHealth);
+                    Debug.Log("Player Health: " + player.curHealth);
                 }
             }
 

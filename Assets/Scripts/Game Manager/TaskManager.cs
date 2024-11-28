@@ -47,6 +47,7 @@ public class TaskManager : MonoBehaviour
         tasks.Add(new Task(2, "Tiêu diệt quái vật.", BatDauTieuDietAcidAlien, DaTieuDietXongAcidAlien, () => KillCount >= 5));
         tasks.Add(new Task(2, "Tìm đường thoát khỏi đây.", TimDuongThoatKhoiDay, DaThoatKhoiKhuVucAcid, () => OpenDoor.Instance.IsOpenDoor));
         tasks.Add(new Task(2, "Tìm cách tắt lazer.", TieuDietQuaiVat, TatDuocLazer, () => GameLaser.Instance.isTurnOff));
+        tasks.Add(new Task(2, "Kiểm tra xung quanh", GiaiDo1, GiaiDo2, () => BunkerDoor.Instance.isOpen));
         if (tasks.Count > 0)
         {
             if (CurrentIndex == 0) // Nếu là lần đầu tiên chơi
@@ -125,7 +126,7 @@ public class TaskManager : MonoBehaviour
     {
         // Lấy thông tin hiện tại của người chơi và lưu
         Vector3 playerPosition = PlayerController.Instance.transform.position;
-        float currentHealth = PlayerController.Instance.currentHealth;
+        float currentHealth = PlayerController.Instance.curHealth;
         int currentTaskIndex = CurrentIndex;
         bool isArmorEquipped = GameManager.Instance.isArmorEquipped;
         bool hasGun = GameManager.Instance.hasGun;
@@ -144,7 +145,7 @@ public class TaskManager : MonoBehaviour
         CurrentIndex = currentTaskIndex;
         GameManager.Instance.savePointID = savePointID;
         GameManager.Instance.playerTransform.position = playerPosition;
-        PlayerController.Instance.currentHealth = currentHealth;
+        PlayerController.Instance.curHealth = currentHealth;
         GameManager.Instance.isArmorEquipped = isArmorEquipped;
         GameManager.Instance.hasGun = hasGun;
 
@@ -202,4 +203,7 @@ public class TaskManager : MonoBehaviour
 
     void TieuDietQuaiVat() => Debug.Log("");
     void TatDuocLazer() => Debug.Log("");
+
+    void GiaiDo1() => Debug.Log("");
+    void GiaiDo2() => Debug.Log("");
 }

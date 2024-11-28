@@ -47,7 +47,7 @@ public class RayChecker : MonoBehaviour
             }
 
 
-            if (!PlayerController.Instance.IsParkour && Input.GetButtonDown("Fire1") && Time.time >= lastShootTime + shootCooldown)
+            if (!PlayerController.Instance.IsParkour && Input.GetButton("Fire1") && Time.time >= lastShootTime + shootCooldown)
             {
                 PlayerInterface inter = hit.collider.gameObject.GetComponent<PlayerInterface>();
                 if (anim != null)

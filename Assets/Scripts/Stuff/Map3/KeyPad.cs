@@ -6,9 +6,16 @@ using UnityEngine;
 
 public class KeyPad : MonoBehaviour
 {
+    public static KeyPad Instance;
     [SerializeField] private TextMeshProUGUI Ans; // Text hiển thị số đã nhập
 
-
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
 
 
     private string Answer = "321844"; // Mã đúng để mở cửa

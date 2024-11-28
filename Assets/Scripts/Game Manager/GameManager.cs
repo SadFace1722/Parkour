@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     public bool isArmorEquipped; // Trạng thái giáp
     public bool hasGun; // Trạng thái súng
     public int savePointID; // Định nghĩa biến savePointID
-    private GameData gameData = new GameData();
+    public GameData gameData = new GameData();
 
     private void Awake()
     {
@@ -87,7 +87,7 @@ public class GameManager : MonoBehaviour
 
         // Khôi phục vị trí người chơi
         PlayerController.Instance.transform.position = playerPosition;
-        PlayerController.Instance.currentHealth = playerHealth;
+        PlayerController.Instance.curHealth = playerHealth;
 
         // Đảm bảo rằng trạng thái Armor và Shotgun được cập nhật đúng
         UpdatePlayerEquipment();

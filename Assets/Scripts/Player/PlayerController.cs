@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float moveSpeed, jumpForce, gravity;
     public bool isGrounded, isFalling, isMoving, isJumping, canControll, isDead;
     public GameObject Player, Armor, Shotgun;
-    public float currentHealth = 100;
+    public float curHealth = 100;
     public Image HealImage, Crosshair;
     public Image damageImage;  // Hình ảnh khi bị tấn công
     public Image deathImage;   // Hình ảnh khi chết
@@ -27,6 +27,12 @@ public class PlayerController : MonoBehaviour
     private float damageFadeDuration = 0.1f;   // Thời gian hiển thị khi nhận sát thương
     private float deathFadeSpeed = 1.5f;       // Tốc độ hiển thị khi chết
 
+
+    private Vector3 savedPosition; // Lưu vị trí người chơi
+    private bool isRespawning = false; // Biến kiểm soát coroutine hồi sinh
+
+
+
     private void Awake()
     {
         if (Instance == null)
@@ -39,14 +45,42 @@ public class PlayerController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         canControll = true;
+        isDead = false;
+        isRespawning = false; // Đảm bảo trạng thái không bị lệch
+
         ToggleCamera();
 
-        if (damageImage != null) damageImage.color = Color.clear; // Ẩn ảnh sát thương
-        if (deathImage != null) deathImage.color = Color.clear;   // Ẩn ảnh chết
+        if (damageImage != null) damageImage.color = Color.clear;
+        if (deathImage != null) deathImage.color = Color.clear;
     }
+
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            Debug.Log("Loading progress...");
+            // Gọi phương thức LoadGame từ GameData và lấy các giá trị
+            int savePointID;
+            Vector3 playerPosition;
+            float currentHealth;
+            int currentTaskIndex;
+            bool isArmorEquipped;
+            bool hasGun;
+
+            GameManager.Instance.gameData.LoadGame(out savePointID, out playerPosition, out currentHealth, out currentTaskIndex, out isArmorEquipped, out hasGun);
+
+            // Cập nhật trạng thái của nhân vật sau khi load
+            transform.position = playerPosition;
+            curHealth = currentHealth;
+
+            // Có thể cập nhật thêm trạng thái giáp và súng (ví dụ: enable armor, give gun)
+            Armor.SetActive(isArmorEquipped);  // Kích hoạt giáp nếu có
+            Shotgun.SetActive(hasGun);         // Kích hoạt súng nếu có
+
+            Debug.Log("Player position loaded: " + playerPosition);
+        }
+
         if (Armor.activeSelf && HealImage != null)
         {
             HealImage.gameObject.SetActive(true);  // Hiển thị Health Image
@@ -59,22 +93,22 @@ public class PlayerController : MonoBehaviour
         // Update Health Bar smoothly
         if (HealImage != null)
         {
-            HealImage.fillAmount = Mathf.Lerp(HealImage.fillAmount, currentHealth / 100f, Time.deltaTime * 5f);
+            HealImage.fillAmount = Mathf.Lerp(HealImage.fillAmount, curHealth / 100f, Time.deltaTime * 5f);
         }
 
-        if (currentHealth <= 0 && !isDead)
+        if (curHealth <= 0 && !isDead)
         {
             isDead = true;
             StartCoroutine(HandleDeathEffect());
             StartCoroutine(WaitBeforeRespawn(1.5f)); // Gọi Coroutine để hồi sinh
         }
-        else if (currentHealth > 0)
+        else if (curHealth > 0)
         {
             isDead = false;
             StopCoroutine(HandleDeathEffect());  // Ngừng hiệu ứng chết nếu hồi sinh
         }
 
-        canControll = currentHealth > 0;
+        canControll = curHealth > 0;
         isGrounded = controller.isGrounded;
 
         if (isTakingDamage && damageImage != null)
@@ -198,7 +232,7 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
-        currentHealth = Mathf.Max(0, currentHealth - amount);
+        curHealth = Mathf.Max(0, curHealth - amount);
 
         if (damageImage != null)
         {
@@ -209,7 +243,7 @@ public class PlayerController : MonoBehaviour
 
     public void TakeHeal(float amount)
     {
-        currentHealth = Mathf.Min(100, currentHealth + amount);
+        curHealth = Mathf.Min(100, curHealth + amount);
     }
 
     private IEnumerator HandleDeathEffect()
@@ -225,29 +259,39 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    IEnumerator WaitBeforeRespawn(float delayTime)
+    private IEnumerator WaitBeforeRespawn(float delayTime)
     {
-        yield return new WaitForSeconds(delayTime); // Đợi 1.5 giây
+        if (isRespawning) yield break; // Ngừng nếu đã đang hồi sinh
+        isRespawning = true;
 
-        // Kiểm tra nếu GameManager và playerTransform hợp lệ
-        if (GameManager.Instance != null && GameManager.Instance.playerTransform != null)
-        {
-            GameManager.Instance.LoadGameProgress();
-            transform.position = GameManager.Instance.playerTransform.position; // Đặt lại vị trí
-        }
+        yield return new WaitForSeconds(delayTime);
 
-        // Reset trạng thái khi hồi sinh
-        currentHealth = 100; // Khôi phục sức khỏe
+        // Hồi sinh người chơi tại vị trí đã lưu
+        transform.position = savedPosition; // Đặt lại vị trí người chơi đã lưu
+        controller.enabled = false; // Tắt CharacterController tạm thời để tránh lỗi vật lý
+        yield return null; // Đợi 1 frame
+        controller.enabled = true; // Kích hoạt lại CharacterController sau khi thay đổi vị trí
+
+        // Cập nhật lại các giá trị khi hồi sinh
+        curHealth = 100; // Sức khỏe hồi phục đầy đủ
         isDead = false;
-        canControll = true; // Cho phép điều khiển lại
+        canControll = true; // Cho phép điều khiển lại nhân vật
+        isRespawning = false;
 
-        // Ẩn hiệu ứng chết
+        // Nếu có hình ảnh khi chết, ẩn đi
         if (deathImage != null)
         {
             deathImage.color = Color.clear;
         }
 
-        Debug.Log("Player has respawned at save point.");
+        Debug.Log("Player has respawned at saved position.");
+    }
+
+    // Gọi phương thức này khi người chơi va chạm với một điểm lưu
+    public void SavePosition(Vector3 newPosition)
+    {
+        savedPosition = newPosition; // Lưu vị trí của người chơi
+        Debug.Log("Player position saved at: " + savedPosition);
     }
 
     void ToggleCamera()
