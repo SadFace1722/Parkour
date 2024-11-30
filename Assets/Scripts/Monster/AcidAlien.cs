@@ -32,6 +32,13 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
 
     private bool isDead = false; // Biến kiểm tra trạng thái chết của quái
 
+
+    public GameObject projectilePrefab; // Prefab của đạn
+    public float rangedAttackRadius = 7f; // Khoảng cách tấn công từ xa
+    public float projectileSpeed = 10f; // Tốc độ đạn
+    public float rangedAttackCooldown = 3f;
+    private float lastRangedAttackTime = 0f;
+    public float aimOffset = 1.0f; // Độ lệch khi bắn đạn
     private void Awake()
     {
         if (Instance == null)
@@ -92,15 +99,25 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
                 isPlayerInRange = false;
             }
 
-            if (isPlayerInRange && distanceToPlayer <= attackRadius && Time.time >= lastAttackTime + attackCooldown)
+            // Kiểm tra tấn công từ xa
+            if (isPlayerInRange && distanceToPlayer <= rangedAttackRadius && distanceToPlayer > attackRadius)
             {
-                AttackPlayer();
+                if (Time.time >= lastRangedAttackTime + rangedAttackCooldown)
+                {
+                    SprayAnim();
+                }
+            }
+            // Tấn công cận chiến nếu đủ gần
+            else if (isPlayerInRange && distanceToPlayer <= attackRadius && Time.time >= lastAttackTime + attackCooldown)
+            {
+                AttackPlayer(); // Gọi hàm tấn công cận chiến
             }
         }
 
         CheckIfUsingNavMeshLink();
         UpdateWalkingAnimation();
     }
+
 
     private void AttackPlayer()
     {
@@ -231,5 +248,21 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
             }
         }
         isHealing = false;
+    }
+    void SprayAnim()
+    {
+        anim.SetTrigger("Spray");
+        lastRangedAttackTime = Time.time;
+    }
+    public void RangedAttack()
+    {
+        GameObject projectile = Instantiate(projectilePrefab, transform.position + Vector3.up, Quaternion.identity);
+
+        // Tính hướng bắn với độ lệch
+        Vector3 targetPosition = player.position + new Vector3(Random.Range(-aimOffset, aimOffset), Random.Range(-aimOffset, aimOffset), Random.Range(-aimOffset, aimOffset));
+        Vector3 direction = (targetPosition - transform.position).normalized;
+
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        rb.velocity = direction * projectileSpeed;
     }
 }
