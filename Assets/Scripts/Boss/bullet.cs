@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class bullet : MonoBehaviour
 {
+    public int damage;
     private void Start()
     {
         Destroy(gameObject, 5f);
@@ -12,7 +13,7 @@ public class bullet : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            PlayerController.Instance.TakeDamage(15);
+            PlayerController.Instance.TakeDamage(damage);
         }
     }
 }

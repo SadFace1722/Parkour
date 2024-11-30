@@ -38,7 +38,8 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
     public float projectileSpeed = 10f; // Tốc độ đạn
     public float rangedAttackCooldown = 3f;
     private float lastRangedAttackTime = 0f;
-    public float aimOffset = 1.0f; // Độ lệch khi bắn đạn
+    public float aimOffset = 1.0f;
+    public Transform FirePoint;
     private void Awake()
     {
         if (Instance == null)
@@ -256,7 +257,7 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
     }
     public void RangedAttack()
     {
-        GameObject projectile = Instantiate(projectilePrefab, transform.position + Vector3.up, Quaternion.identity);
+        GameObject projectile = Instantiate(projectilePrefab, FirePoint.position, Quaternion.identity);
 
         // Tính hướng bắn với độ lệch
         Vector3 targetPosition = player.position + new Vector3(Random.Range(-aimOffset, aimOffset), Random.Range(-aimOffset, aimOffset), Random.Range(-aimOffset, aimOffset));

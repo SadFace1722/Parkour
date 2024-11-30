@@ -195,7 +195,18 @@ public class TaskManager : MonoBehaviour
     void TimCachTatAcid() { }
     void DaTatDuocAcid() => TurnOffAcid.Instance.turnOff = true;
 
-    void BatDauTieuDietAcidAlien() => TurnOffAcid.Instance.turnOff = true;
+    void BatDauTieuDietAcidAlien()
+    {
+        TurnOffAcid.Instance.turnOff = true;
+        WeaponManager.Instance.GivePlayerGun();
+        if (TurnOffAcid.Instance.turnOff)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                EnemySpawner.Instance.SpawnEnemy();
+            }
+        }
+    }
     void DaTieuDietXongAcidAlien() => KillCount = 5;
 
     void TimDuongThoatKhoiDay() => TurnOffAcid.Instance.turnOff = true;
