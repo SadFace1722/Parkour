@@ -29306,6 +29306,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   box: {fileID: 5412469951511331435}
+  Damage: 20
 --- !u!1 &8645358291335933856
 GameObject:
   m_ObjectHideFlags: 0

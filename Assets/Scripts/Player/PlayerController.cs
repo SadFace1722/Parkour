@@ -31,14 +31,39 @@ public class PlayerController : MonoBehaviour
     private Vector3 savedPosition; // Lưu vị trí người chơi
     private bool isRespawning = false; // Biến kiểm soát coroutine hồi sinh
 
-
-
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
         }
+
+        // Kiểm tra xem có dữ liệu vị trí nào đã lưu không
+        if (PlayerPrefs.HasKey("PlayerPosX"))
+        {
+            float posX = PlayerPrefs.GetFloat("PlayerPosX");
+            float posY = PlayerPrefs.GetFloat("PlayerPosY");
+            float posZ = PlayerPrefs.GetFloat("PlayerPosZ");
+            savedPosition = new Vector3(posX, posY, posZ);
+        }
+        else
+        {
+            savedPosition = transform.position;
+        }
+
+        // Tắt CharacterController trước khi thay đổi vị trí
+        if (controller != null)
+        {
+            controller.enabled = false;
+            transform.position = savedPosition;
+            controller.enabled = true;
+        }
+        else
+        {
+            transform.position = savedPosition;
+        }
+
+        Debug.Log("Player position loaded at: " + savedPosition);
     }
 
     void Start()
@@ -57,30 +82,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            Debug.Log("Loading progress...");
-            // Gọi phương thức LoadGame từ GameData và lấy các giá trị
-            int savePointID;
-            Vector3 playerPosition;
-            float currentHealth;
-            int currentTaskIndex;
-            bool isArmorEquipped;
-            bool hasGun;
-
-            GameManager.Instance.gameData.LoadGame(out savePointID, out playerPosition, out currentHealth, out currentTaskIndex, out isArmorEquipped, out hasGun);
-
-            // Cập nhật trạng thái của nhân vật sau khi load
-            transform.position = playerPosition;
-            curHealth = currentHealth;
-
-            // Có thể cập nhật thêm trạng thái giáp và súng (ví dụ: enable armor, give gun)
-            Armor.SetActive(isArmorEquipped);  // Kích hoạt giáp nếu có
-            Shotgun.SetActive(hasGun);         // Kích hoạt súng nếu có
-
-            Debug.Log("Player position loaded: " + playerPosition);
-        }
-
         if (Armor.activeSelf && HealImage != null)
         {
             HealImage.gameObject.SetActive(true);  // Hiển thị Health Image
@@ -290,7 +291,11 @@ public class PlayerController : MonoBehaviour
     // Gọi phương thức này khi người chơi va chạm với một điểm lưu
     public void SavePosition(Vector3 newPosition)
     {
-        savedPosition = newPosition; // Lưu vị trí của người chơi
+        savedPosition = newPosition;
+        PlayerPrefs.SetFloat("PlayerPosX", savedPosition.x);
+        PlayerPrefs.SetFloat("PlayerPosY", savedPosition.y);
+        PlayerPrefs.SetFloat("PlayerPosZ", savedPosition.z);
+        PlayerPrefs.Save();  // Lưu lại dữ liệu
         Debug.Log("Player position saved at: " + savedPosition);
     }
 

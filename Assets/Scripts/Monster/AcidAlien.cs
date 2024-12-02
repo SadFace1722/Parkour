@@ -72,18 +72,17 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
 
     private void Update()
     {
-        if (isDead) return; // Ngăn không cho di chuyển hoặc tấn công khi quái đã chết
+        if (isDead) return;
 
         if (TurnOffAcid.Instance != null && TurnOffAcid.Instance.turnOff)
         {
-            safePoints.Clear(); // Xóa danh sách điểm hồi máu
+            safePoints.Clear(); 
         }
 
         CheckHealingArea();
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // Điều kiện: Nếu máu thấp nhưng không có điểm hồi máu => Tấn công player
         if (health <= lowHealthThreshold && safePoints.Count > 0)
         {
             FindAndMoveToSafePoint();
@@ -93,7 +92,8 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
             if (distanceToPlayer <= detectionRadius)
             {
                 isPlayerInRange = true;
-                nav.SetDestination(player.position); // Quái sẽ di chuyển đến player khi không tìm thấy điểm hồi máu
+                nav.SetDestination(player.position);
+                LookAtPlayer();
             }
             else
             {
@@ -265,5 +265,14 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
 
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
         rb.velocity = direction * projectileSpeed;
+    }
+
+    void LookAtPlayer()
+    {
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        directionToPlayer.y = 0; // Đảm bảo không xoay theo trục Y
+
+        Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f); // Điều chỉnh tốc độ quay
     }
 }

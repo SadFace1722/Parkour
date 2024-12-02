@@ -5,6 +5,7 @@ using UnityEngine;
 public class DamageBox : MonoBehaviour
 {
     [SerializeField] BoxCollider box;
+    [SerializeField] int Damage;
     private void Start()
     {
         box = GetComponent<BoxCollider>();
@@ -16,7 +17,7 @@ public class DamageBox : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PlayerController.Instance.TakeDamage(50);
+            PlayerController.Instance.TakeDamage(Damage);
         }
     }
     void TurnOffBox()

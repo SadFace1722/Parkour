@@ -68,7 +68,9 @@ public class PauseMenu : MonoBehaviour
 
     public void GoToMainMenu()
     {
-        Time.timeScale = 1; // Đặt lại time scale khi về menu chính
+        Time.timeScale = 1;
+        TaskManager.Instance.SaveGame();
+        PlayerController.Instance.SavePosition(PlayerController.Instance.transform.position);
         SceneManager.LoadScene("Menu"); // Load scene Menu chính
     }
 
