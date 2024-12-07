@@ -11,7 +11,7 @@ public class AttackTrigger : MonoBehaviour
 
             if (PlayerController.Instance != null)
             {
-                PlayerController.Instance.TakeDamage(AcidAlien.Instance.attackDamage);
+                PlayerController.Instance.TakeDamage(15);
             }
         }
     }
