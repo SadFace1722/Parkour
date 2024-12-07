@@ -11,7 +11,7 @@ public class KeyPad : MonoBehaviour
 
 
 
-    private string Answer = "321844"; // Mã đúng để mở cửa
+    private string Answer = "314159"; // Mã đúng để mở cửa
 
 
 
