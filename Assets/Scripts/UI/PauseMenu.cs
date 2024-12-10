@@ -7,12 +7,14 @@ public class PauseMenu : MonoBehaviour
     public MonoBehaviour playerController; // Kéo script điều khiển Player vào đây
     public MonoBehaviour firstPersonLook; // Kéo script điều khiển góc nhìn thứ nhất vào đây
     private bool isPaused = false;
+    private AudioSource[] allAudioSources; // Mảng lưu tất cả các AudioSource
 
     void Start()
     {
         pauseMenuPanel.SetActive(false); // Ẩn menu lúc đầu
         HideCursor(); // Ẩn con trỏ chuột khi bắt đầu game
         Time.timeScale = 1; // Đảm bảo thời gian game chạy bình thường khi bắt đầu
+        allAudioSources = FindObjectsOfType<AudioSource>(); // Tìm tất cả các AudioSource trong scene
     }
 
     void Update()
@@ -37,10 +39,12 @@ public class PauseMenu : MonoBehaviour
         if (isPaused)
         {
             DisableInput();
+            MuteAudio(true); // Tắt âm thanh khi game pause
         }
         else
         {
             EnableInput();
+            MuteAudio(false); // Bật âm thanh khi game tiếp tục
         }
     }
 
@@ -61,6 +65,15 @@ public class PauseMenu : MonoBehaviour
         Cursor.visible = false;
     }
 
+    // Tắt hoặc bật âm thanh trong game
+    private void MuteAudio(bool mute)
+    {
+        foreach (AudioSource audioSource in allAudioSources)
+        {
+            audioSource.mute = mute; // Tắt hoặc bật âm thanh
+        }
+    }
+
     public void PlayGame()
     {
         TogglePause(); // Tiếp tục game
@@ -74,9 +87,9 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadScene("Menu"); // Load scene Menu chính
     }
 
-    public void ExitGame()
+    public void Restart()
     {
-        Application.Quit(); // Thoát game
+        // Có thể thực hiện lại thao tác restart ở đây nếu cần
     }
 
     private void HideCursor()
