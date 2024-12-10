@@ -3,65 +3,99 @@ using UnityEngine.UI;
 
 public class HintManager : MonoBehaviour
 {
-    public Text yellowText; // Tham chiếu đến Text "Yellow"
-    public Text blueText;   // Tham chiếu đến Text "Blue"
-    public Text redText;    // Tham chiếu đến Text "Red"
-    public float hintDuration = 5f; // Thời gian hiển thị gợi ý
-    private bool isPlayerInZone = false; // Kiểm tra xem người chơi có trong khu vực hay không
-    private bool hasShownHint = false;   // Đảm bảo gợi ý chỉ hiển thị một lần khi nhấn F
+    [Header("UI Components")]
+    public Text hintText;        // Text UI để hiển thị gợi ý
+    public Text instructionText; // Text UI để hiển thị hướng dẫn "Ấn F để xem gợi ý"
 
-    void Start()
-    {
-        // Đảm bảo các chữ bị tắt khi trò chơi bắt đầu
-        HideAllHints();
-    }
+    [Header("Hint Configuration")]
+    public string[] hints;       // Mảng chứa các gợi ý
+    private bool isPlayerInZone = false; // Kiểm tra người chơi trong khu vực
+    private bool isHintShown = false;    // Trạng thái gợi ý đã hiển thị chưa
 
-    void Update()
+    private void Start()
     {
-        // Khi người chơi trong khu vực và nhấn phím F, hiển thị gợi ý
-        if (isPlayerInZone && Input.GetKeyDown(KeyCode.F) && !hasShownHint)
+        // Kiểm tra và khởi tạo gợi ý nếu cần
+        if (hints == null || hints.Length == 0)
         {
-            ShowHint();
-            hasShownHint = true; // Ngăn gợi ý hiển thị lại nếu đã nhấn
+            Debug.LogWarning("Hints array is empty or not initialized. Using default hints.");
+            hints = new string[]
+            {
+                "The sun rises in the east.",
+                "Water flows calmly in the river.",
+                "Fire burns with passion."
+            };
+        }
+
+        // Ẩn các Text UI ban đầu
+        if (hintText != null)
+        {
+            hintText.gameObject.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError("HintText UI is not assigned in the Inspector!");
+        }
+
+        if (instructionText != null)
+        {
+            instructionText.gameObject.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError("InstructionText UI is not assigned in the Inspector!");
         }
     }
 
-    void ShowHint()
+    private void Update()
     {
-        // Hiển thị tất cả các chữ
-        yellowText.gameObject.SetActive(true);
-        blueText.gameObject.SetActive(true);
-        redText.gameObject.SetActive(true);
-
-        // Ẩn chữ sau thời gian đặt trước
-        Invoke("HideAllHints", hintDuration);
+        // Nếu người chơi trong khu vực và nhấn phím F
+        if (isPlayerInZone && Input.GetKeyDown(KeyCode.F) && !isHintShown)
+        {
+            ShowHints(); // Hiển thị tất cả gợi ý
+        }
     }
 
-    void HideAllHints()
+    private void ShowHints()
     {
-        // Tắt tất cả các chữ
-        yellowText.gameObject.SetActive(false);
-        blueText.gameObject.SetActive(false);
-        redText.gameObject.SetActive(false);
+        isHintShown = true; // Đặt trạng thái gợi ý đã hiển thị
+        hintText.gameObject.SetActive(true); // Hiển thị gợi ý
+        instructionText.gameObject.SetActive(false); // Ẩn hướng dẫn
+
+        // Kết hợp tất cả các gợi ý thành một chuỗi duy nhất
+        string combinedHints = string.Join("\n", hints);
+        hintText.text = combinedHints;
+
+        // Ẩn gợi ý sau 5 giây
+        StartCoroutine(HideHintAfterDelay(5f));
+    }
+
+    private System.Collections.IEnumerator HideHintAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // Tắt text gợi ý và đặt lại trạng thái
+        hintText.gameObject.SetActive(false);
+        isHintShown = false;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // Kiểm tra nếu người chơi vào khu vực
         if (other.CompareTag("Player"))
         {
-            isPlayerInZone = true; // Bật cờ
+            isPlayerInZone = true; // Xác định người chơi đã vào khu vực
+            instructionText.gameObject.SetActive(true); // Hiển thị hướng dẫn
+            instructionText.text = "Vui lòng ấn F để xem gợi ý";
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        // Kiểm tra nếu người chơi rời khỏi khu vực
         if (other.CompareTag("Player"))
         {
-            isPlayerInZone = false; // Tắt cờ
-            hasShownHint = false;   // Cho phép hiển thị lại khi người chơi quay lại
-            HideAllHints();         // Ẩn gợi ý ngay khi rời khu vực
+            isPlayerInZone = false; // Người chơi rời khỏi khu vực
+            instructionText.gameObject.SetActive(false); // Ẩn hướng dẫn
+            hintText.gameObject.SetActive(false);       // Ẩn gợi ý (nếu đang hiển thị)
+            isHintShown = false;
         }
     }
 }
