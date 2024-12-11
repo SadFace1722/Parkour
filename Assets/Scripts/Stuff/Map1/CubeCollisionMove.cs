@@ -3,19 +3,30 @@ using UnityEngine;
 
 public class CubeCollisionMove : MonoBehaviour
 {
-    public float checkRadius = 5f;
-    public LayerMask collisionLayer;
-    public float moveDistance = 5f;   // Khoảng cách di chuyển sang trái, phải hoặc lên
-    public float moveDuration = 1f;   // Thời gian di chuyển đến vị trí mới
+    public float checkRadius = 5f;        // Bán kính kiểm tra va chạm
+    public LayerMask collisionLayer;      // Lớp dùng để kiểm tra va chạm
+    public float moveDistance = 5f;       // Khoảng cách di chuyển sang trái hoặc phải
+    public float moveDuration = 1f;       // Thời gian di chuyển đến vị trí mới
+    public AudioClip soundClip;           // Âm thanh cần phát
+
+    private AudioSource audioSource;      // Component AudioSource
 
     private Vector3 originalPosition;
-    public bool moveLeft = true;  // Biến chọn hướng di chuyển: true cho trái, false cho phải
-    public bool moveUp = false;   // Biến cho phép di chuyển lên
-    private bool hasMovedOnce = false; // Biến để kiểm tra xem Cube đã di chuyển một lần hay chưa
+    public bool moveLeft = true;          // Biến chọn hướng di chuyển: true cho trái, false cho phải
+    private bool hasMovedOnce = false;    // Kiểm tra Cube đã di chuyển
 
     private void Start()
     {
-        originalPosition = transform.position; // Lưu vị trí ban đầu của Cube
+        originalPosition = transform.position;  // Lưu vị trí ban đầu của Cube
+
+        // Lấy AudioSource từ GameObject
+        audioSource = GetComponent<AudioSource>();
+
+        // Nếu không có AudioSource, thêm vào GameObject
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     private void Update()
@@ -37,8 +48,9 @@ public class CubeCollisionMove : MonoBehaviour
             {
                 Debug.Log("Player đã chạm vào Cube");
 
-                // Bắt đầu di chuyển Cube theo hướng đã chọn
+                // Bắt đầu di chuyển Cube và phát âm thanh
                 StartCoroutine(MoveCube());
+                PlaySoundOnce();
                 break;
             }
         }
@@ -55,16 +67,12 @@ public class CubeCollisionMove : MonoBehaviour
         {
             targetPosition = originalPosition + Vector3.left * moveDistance;
         }
-        else if (moveUp)
-        {
-            targetPosition = originalPosition + Vector3.up * moveDistance;  // Di chuyển lên
-        }
         else
         {
             targetPosition = originalPosition + Vector3.right * moveDistance;
         }
 
-        // Di chuyển đến vị trí mục tiêu
+        // Di chuyển Cube đến vị trí mục tiêu
         float elapsedTime = 0f;
         while (elapsedTime < moveDuration)
         {
@@ -73,19 +81,15 @@ public class CubeCollisionMove : MonoBehaviour
             yield return null;
         }
         transform.position = targetPosition; // Đặt Cube tại vị trí mục tiêu
+    }
 
-        // Sau khi di chuyển xong, quay lại vị trí ban đầu
-        yield return new WaitForSeconds(0.5f); // Chờ một chút trước khi quay lại
-        elapsedTime = 0f; // Reset thời gian
-
-        // Di chuyển Cube trở lại vị trí ban đầu
-        while (elapsedTime < moveDuration)
+    // Phát âm thanh một lần duy nhất
+    private void PlaySoundOnce()
+    {
+        if (soundClip != null)
         {
-            transform.position = Vector3.Lerp(targetPosition, originalPosition, elapsedTime / moveDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            audioSource.PlayOneShot(soundClip);
         }
-        transform.position = originalPosition; // Đặt Cube tại vị trí ban đầu
     }
 
     private void OnDrawGizmos()

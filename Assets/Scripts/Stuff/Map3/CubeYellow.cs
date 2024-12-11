@@ -6,24 +6,32 @@ public class CubeYellow : MonoBehaviour, PlayerInterface
 {
     public static bool isYellowPressed = false; // Biến kiểm tra xem người chơi có nhấn đúng Yellow hay không
     Animator animator;
+
     private void Start()
     {
         animator = transform.parent.GetComponent<Animator>();
+        animator.SetBool("button", false); // Đảm bảo bắt đầu với trạng thái idle
     }
+
     private void Update()
     {
-        AnimaButton();
+        // Animation thụt vào khi nút bị nhấn
+        if (isYellowPressed)
+        {
+            animator.SetBool("button", true); // Thực hiện animation
+        }
     }
+
     public void Interact()
     {
         if (GameLaser.Instance.isGameOver)
         {
-            Debug.Log("isGameOver = " + GameLaser.Instance.isGameOver);
-
+            Debug.Log("Game Over, you can't interact with this cube.");
             return;
         }
+
         // Khi người chơi nhấn vào cube vàng
-        if (GameLaser.Instance.CheckOrder("Yellow"))
+        if (GameLaser.Instance.CheckOrder("Yellow") && !isYellowPressed) // Chỉ khi nhấn đúng và chưa nhấn
         {
             isYellowPressed = true;
             Debug.Log("Yellow Cube pressed correctly!");
@@ -32,17 +40,13 @@ public class CubeYellow : MonoBehaviour, PlayerInterface
         {
             GameLaser.Instance.ResetOrder();
             Debug.Log("Wrong order! Resetting.");
+            DisableButton(); // Vô hiệu hóa nút sau khi sai thứ tự
         }
     }
-    public void AnimaButton()
+
+    // Vô hiệu hóa collider sau khi sai thứ tự
+    private void DisableButton()
     {
-        if (isYellowPressed == true)
-        {
-            animator.SetBool("button", true);
-        }
-        else if (GameLaser.Instance.currentStep == 0)
-        {
-            animator.SetBool("button", false);
-        }
+        GetComponent<Collider>().enabled = false; // Vô hiệu hóa collider của CubeYellow
     }
 }
