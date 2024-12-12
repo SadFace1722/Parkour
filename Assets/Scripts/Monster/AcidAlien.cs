@@ -11,7 +11,7 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
     public float detectionRadius = 10f;
     public float attackRadius = 2f;
     public float attackDamage = 10f;
-    public float health = 100f;
+    public float health = 50f;
     public float healAmount = 5f;
 
     private Transform player;

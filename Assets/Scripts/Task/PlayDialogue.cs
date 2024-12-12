@@ -4,7 +4,6 @@ using UnityEngine;
 public class PlayDialogue : MonoBehaviour
 {
     public static PlayDialogue Instance;
-    [SerializeField] GameObject[] AlienSke;
     public bool isSolve;
     private void Awake()
     {
@@ -34,13 +33,6 @@ public class PlayDialogue : MonoBehaviour
             isSolve = true;
             DialogueManager.instance.StartDialogue(FirstIndex, LastIndex);
             Debug.Log("Dialogue started after 2 seconds.");
-            foreach (var G in AlienSke)
-            {
-                if (G != null)
-                {
-                    G.SetActive(true);
-                }
-            }
         }
     }
 }

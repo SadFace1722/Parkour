@@ -12,7 +12,7 @@ public class TaskManager : MonoBehaviour
     public bool IsProcessing;
     public int CurrentIndex;
     public int KillCount;
-
+    [SerializeField] GameObject[] AlienSke;
     private GameData gameData;
 
     private void Awake()
@@ -48,6 +48,7 @@ public class TaskManager : MonoBehaviour
         tasks.Add(new Task(2, "Tìm đường thoát khỏi đây.", TimDuongThoatKhoiDay, DaThoatKhoiKhuVucAcid, () => OpenDoor.Instance.IsOpenDoor));
         tasks.Add(new Task(2, "Tìm cách tắt lazer.", TieuDietQuaiVat, TatDuocLazer, () => GameLaser.Instance.isTurnOff));
         tasks.Add(new Task(2, "Kiểm tra xung quanh.", GiaiDo1, GiaiDo2, () => PlayDialogue.Instance.isSolve));
+        tasks.Add(new Task(2, "Tiêu diệt quái vật.", CutscenePhongThiNghiem, KillCountAlienSke, () => KillCount >= 4));
         tasks.Add(new Task(2, "Nhập mật khẩu 314159 để mở cửa.", GiaiDo1, GiaiDo2, () => BunkerDoor.Instance.isOpen));
         if (tasks.Count > 0)
         {
@@ -216,6 +217,34 @@ public class TaskManager : MonoBehaviour
     void TieuDietQuaiVat() => Debug.Log("");
     void TatDuocLazer() => Debug.Log("");
 
+
+    void CutscenePhongThiNghiem()
+    {
+        StartCoroutine(WaitToCut());
+        StartCoroutine(WaitToSpawn());
+    }
+    void KillCountAlienSke()
+    {
+        KillCount = 0;
+    }
+    IEnumerator WaitToCut()
+    {
+        yield return new WaitForSeconds(4);
+        CutsceneManager.Instance.PlayCutscene(4);
+    }
+    IEnumerator WaitToSpawn()
+    {
+        yield return new WaitForSeconds(8.3f);
+        foreach (var G in AlienSke)
+        {
+            if (G != null)
+            {
+                G.SetActive(true);
+            }
+        }
+    }
+
     void GiaiDo1() => Debug.Log("");
     void GiaiDo2() => Debug.Log("");
+
 }

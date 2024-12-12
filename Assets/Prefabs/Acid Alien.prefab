@@ -108,13 +108,13 @@ MonoBehaviour:
   attackRadius: 2.5
   attackDamage: 5
   health: 100
-  healAmount: 5
+  healAmount: 40
   attackCooldown: 2
   safePoints: []
   lowHealthThreshold: 50
   isHealing: 0
   healingDistance: 2
-  healingSpeedMultiplier: 1.5
+  healingSpeedMultiplier: 10
   projectilePrefab: {fileID: 967616092162466462, guid: 75205dd4886d705419fd9453cc6dfbd1, type: 3}
   rangedAttackRadius: 15
   projectileSpeed: 25

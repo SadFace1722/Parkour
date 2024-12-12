@@ -37,7 +37,7 @@ public class AlienSkeleton : MonoBehaviour, PlayerInterface
         LookAtPlayer();
 
         // Kiểm tra điều kiện tốc độ di chuyển
-        bool isFast = maxHealth <= 150; // Kiểm tra máu có dưới hoặc bằng 150
+        bool isFast = maxHealth <= 50; // Kiểm tra máu có dưới hoặc bằng 150
         if (isFast)
         {
             animator.SetBool("Fast", true);  // Di chuyển nhanh
@@ -123,7 +123,7 @@ public class AlienSkeleton : MonoBehaviour, PlayerInterface
     {
         isDead = true;
         agent.isStopped = true;
-
+        TaskManager.Instance.KillCount++;
         if (animator != null)
         {
             animator.SetBool("Death", true);

@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public int savePointID; // Định nghĩa biến savePointID
     public GameData gameData = new GameData();
 
+    public bool Turn;
     private void Awake()
     {
         if (Instance == null)
@@ -24,6 +25,8 @@ public class GameManager : MonoBehaviour
         // Kiểm tra lại trạng thái của Armor và Shotgun sau khi load game
         // Điều này đảm bảo rằng trạng thái giáp và súng luôn đúng trong suốt quá trình chơi
         UpdatePlayerEquipment();
+        ToggleShotgun();
+
     }
 
     // Cập nhật trạng thái giáp và súng trong quá trình chơi
@@ -93,5 +96,17 @@ public class GameManager : MonoBehaviour
         UpdatePlayerEquipment();
 
         Debug.Log("Game Loaded from Save Point: " + savePointID);
+    }
+
+    private void ToggleShotgun()
+    {
+        if (hasGun && Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Turn = !Turn;
+        }
+        if (PlayerController.Instance.Shotgun != null)
+        {
+            PlayerController.Instance.Shotgun.SetActive(Turn);
+        }
     }
 }
