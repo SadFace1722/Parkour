@@ -11,4 +11,12 @@ public class Door : MonoBehaviour, PlayerInterface
             anim.SetBool("Open", true);
         }
     }
+    public void OpenDoorSound()
+    {
+        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.DoorOpen, transform.position);
+    }
+    public void CloseDoorSound()
+    {
+        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.DoorClose, transform.position);
+    }
 }
