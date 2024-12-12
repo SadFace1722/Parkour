@@ -26,32 +26,26 @@ public class GameLaser : MonoBehaviour
     {
         if (isGameOver) return false; // Không kiểm tra nếu đã sai thứ tự
 
-        if (color == "Yellow" && currentStep == 0)
+        // Kiểm tra thứ tự nhấn theo màu
+        if (color == correctOrder[currentStep])
         {
             currentStep++;
-            Debug.Log("Yellow pressed correctly!");
-            return true;
-        }
-        else if (color == "Blue" && currentStep == 1)
-        {
-            currentStep++;
-            Debug.Log("Blue pressed correctly!");
-            return true;
-        }
-        else if (color == "Red" && currentStep == 2)
-        {
-            currentStep++;
-            Debug.Log("Red pressed correctly!");
-            isTurnOff = true;
-            DisableLasers(); // Vô hiệu hóa laser khi hoàn tất
+            Debug.Log(color + " pressed correctly!");
+
+            // Kiểm tra nếu đã nhấn đủ 3 màu đúng thứ tự
+            if (currentStep == correctOrder.Count)
+            {
+                isTurnOff = true;
+                DisableLasers(); // Tắt laser khi đúng thứ tự
+            }
             return true;
         }
         else
         {
             // Sai thứ tự, kích hoạt trạng thái game kết thúc
-            isGameOver = true;
-            DisableCubes(); // Vô hiệu hóa tất cả các nút sau khi sai
-            Debug.Log("Wrong order! Game Over.");
+            //isGameOver = true;
+            //DisableCubes(); // Vô hiệu hóa tất cả các nút sau khi sai
+            //Debug.Log("Wrong order! Game Over.");
             return false;
         }
     }
