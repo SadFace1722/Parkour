@@ -78,6 +78,7 @@ public class Boss : MonoBehaviour, PlayerInterface
         {
             anim.SetTrigger("Skill1");
             damageTaken = 0f;
+            SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.BSkill1, transform.position);
             anim.SetLayerWeight(LayerAttack, 0);
             anim.SetLayerWeight(LayerSkill1, 1);
             Invoke("TurnOffSkill", 2f);
@@ -148,7 +149,7 @@ public class Boss : MonoBehaviour, PlayerInterface
         health -= amount;
         damageTaken += amount;
         anim.SetTrigger("Hurt2");
-
+        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.BHurt, transform.position);
         if (health <= 0 && !isDead)
         {
             health = 0;
@@ -161,6 +162,7 @@ public class Boss : MonoBehaviour, PlayerInterface
     {
         isShieldActive = true;
         shieldCurrentHealth = shieldMaxHealth; // Đặt lại máu của khiên
+        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.BSkill2, transform.position);
         shieldOnCooldown = true; // Bắt đầu cooldown
         Debug.Log("Shield activated!");
         animSkill2.SetBool("Skill2", true);
@@ -190,6 +192,7 @@ public class Boss : MonoBehaviour, PlayerInterface
     void Die()
     {
         anim.SetBool("Death", isDead);
+        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.BDie, transform.position);
         navMeshAgent.isStopped = true;
     }
 
@@ -204,7 +207,7 @@ public class Boss : MonoBehaviour, PlayerInterface
     {
         nextFireTime = Time.time + 1f / fireRate;
         isAttacking = false;
-
+        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.BAttack, transform.position);
         Vector3 directionToPlayer = (player.position - firePoint.position).normalized;
         float deviationAmount = 1.0f - accuracy;
         Vector3 deviationVector = new Vector3(

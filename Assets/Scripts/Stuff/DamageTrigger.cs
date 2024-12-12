@@ -13,6 +13,7 @@ public class DamageTrigger : MonoBehaviour
             PlayerController player = other.GetComponent<PlayerController>();
             if (player != null && Time.time >= nextDamageTime)
             {
+                SoundManager.Instance.PlaySound(SoundManager.Instance.Acid);
                 player.TakeDamage(damageAmount);
                 Debug.Log("Player Health: " + player.curHealth);
                 nextDamageTime = Time.time + damageInterval; // Cập nhật thời gian cho lần sát thương tiếp theo

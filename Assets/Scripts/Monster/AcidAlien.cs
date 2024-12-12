@@ -76,7 +76,7 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
 
         if (TurnOffAcid.Instance != null && TurnOffAcid.Instance.turnOff)
         {
-            safePoints.Clear(); 
+            safePoints.Clear();
         }
 
         CheckHealingArea();
@@ -106,6 +106,7 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
                 if (Time.time >= lastRangedAttackTime + rangedAttackCooldown)
                 {
                     SprayAnim();
+                    SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.AASpit, transform.position);
                 }
             }
             // Tấn công cận chiến nếu đủ gần
@@ -123,6 +124,7 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
     private void AttackPlayer()
     {
         anim.SetTrigger("Attack");
+        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.AAttack, transform.position);
         lastAttackTime = Time.time;
     }
 
@@ -137,7 +139,7 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
 
         // Kích hoạt animation "Hurt"
         anim.SetTrigger("Hurt");
-
+        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.AAHurt, transform.position);
         if (health <= 0 && !isDead) // Kiểm tra chết
         {
             Die();
@@ -157,6 +159,7 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
     {
         isDead = true; // Đánh dấu trạng thái chết
         anim.SetBool("isDead", true);
+        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.AADie, transform.position);
         nav.isStopped = true; // Ngăn di chuyển khi chết
         Debug.Log("AcidAlien đã chết!");
         TaskManager.Instance.KillCount++;

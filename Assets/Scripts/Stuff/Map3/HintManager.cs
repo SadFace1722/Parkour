@@ -20,9 +20,9 @@ public class HintManager : MonoBehaviour
             Debug.LogWarning("Hints array is empty or not initialized. Using default hints.");
             hints = new string[]
             {
-                "The sun rises in the east.",
-                "Water flows calmly in the river.",
-                "Fire burns with passion."
+                "Mặt trời mọc ở hướng đông",
+                "Nước chảy êm đềm trong dòng sông",
+                "Lửa cháy với đam mê"
             };
         }
 

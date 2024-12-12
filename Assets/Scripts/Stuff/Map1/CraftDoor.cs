@@ -21,6 +21,14 @@ public class CraftDoor : MonoBehaviour, PlayerInterface
     void Update()
     {
         anim.SetBool("Door", OpenDoor);
+        if (OpenDoor)
+        {
+            SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.DoorOpen, transform.position);
+        }
+        else
+        {
+            SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.DoorClose, transform.position);
+        }
     }
 
     public void Interact()

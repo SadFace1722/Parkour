@@ -100,6 +100,7 @@ public class PlayerController : MonoBehaviour
         if (curHealth <= 0 && !isDead)
         {
             isDead = true;
+            SoundManager.Instance.PlaySound(SoundManager.Instance.PDie);
             StartCoroutine(HandleDeathEffect());
             StartCoroutine(WaitBeforeRespawn(1.5f)); // Gọi Coroutine để hồi sinh
         }
@@ -225,6 +226,7 @@ public class PlayerController : MonoBehaviour
     {
         if (canControll && isGrounded)
         {
+            SoundManager.Instance.PlaySound(SoundManager.Instance.PJump);
             ver.y = jumpForce;
             isJumping = true;
             isFalling = false;
@@ -234,7 +236,7 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(float amount)
     {
         curHealth = Mathf.Max(0, curHealth - amount);
-
+        //SoundManager.Instance.PlaySound(SoundManager.Instance.PHurt);
         if (damageImage != null)
         {
             isTakingDamage = true;

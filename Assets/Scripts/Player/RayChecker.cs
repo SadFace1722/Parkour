@@ -52,7 +52,8 @@ public class RayChecker : MonoBehaviour
                 PlayerInterface inter = hit.collider.gameObject.GetComponent<PlayerInterface>();
                 if (anim != null)
                 {
-                    anim.SetTrigger("Shoot");  // Đảm bảo trigger này có trong Animator
+                    anim.SetTrigger("Shoot");
+                    SoundManager.Instance.PlaySound(SoundManager.Instance.PGunBlast);
                 }
                 if (inter != null)
                 {
