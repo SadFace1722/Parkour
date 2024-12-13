@@ -5,7 +5,7 @@ public class SoundManager : MonoBehaviour
     public static SoundManager Instance { get; private set; }
 
     [Header("Audio EnviromentEnviroment")]
-    public AudioClip BackgroundMusic, MusicBoss, DoorOpen, DoorClose, Laser, Acid;
+    public AudioClip BackgroundMusic, MusicBoss, DoorOpen, DoorClose, Laser, Acid, Touch;
     [Header("Audio Player")]
     public AudioClip PJump, PHurt, PDie, PGunBlast;
 

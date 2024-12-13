@@ -43,6 +43,7 @@ public class RayChecker : MonoBehaviour
                 {
                     inter.Interact();
                     Debug.Log("Interact được gọi với: " + hit.collider.gameObject.name);
+                    SoundManager.Instance.PlaySound(SoundManager.Instance.Touch);
                 }
             }
 
