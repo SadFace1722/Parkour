@@ -46,7 +46,7 @@ public class TaskManager : MonoBehaviour
         tasks.Add(new Task(2, "Tìm cách tắt Acid.", TimCachTatAcid, DaTatDuocAcid, () => TurnOffAcid.Instance.turnOff));
         tasks.Add(new Task(2, "Tiêu diệt quái vật.", BatDauTieuDietAcidAlien, DaTieuDietXongAcidAlien, () => KillCount >= 5));
         tasks.Add(new Task(2, "Tìm đường thoát khỏi đây.", TimDuongThoatKhoiDay, DaThoatKhoiKhuVucAcid, () => OpenDoor.Instance.IsOpenDoor));
-        tasks.Add(new Task(2, "Tìm cách tắt lazer.", TieuDietQuaiVat, TatDuocLazer, () => GameLaser.Instance.isTurnOff));
+        tasks.Add(new Task(2, "Tìm cách tắt lazer.", TieuDietQuaiVat, TatDuocLazer, () => GameLaser.Instance.isComplete));
         tasks.Add(new Task(2, "Kiểm tra xung quanh.", GiaiDo1, GiaiDo2, () => PlayDialogue.Instance.isSolve));
         tasks.Add(new Task(2, "Tiêu diệt quái vật.", CutscenePhongThiNghiem, KillCountAlienSke, () => KillCount >= 4));
         tasks.Add(new Task(2, "Nhập mật khẩu 314159 để mở cửa.", GiaiDo1, GiaiDo2, () => BunkerDoor.Instance.isOpen));
