@@ -3,6 +3,7 @@ using UnityEngine.AI;
 
 public class Boss : MonoBehaviour, PlayerInterface
 {
+    public static Boss Intance;
     public float health = 100f;
     public float damage = 20f;
     public float attackRange = 10f;
@@ -21,7 +22,7 @@ public class Boss : MonoBehaviour, PlayerInterface
     private float nextFireTime = 0f;
     private bool isPlayerInRange = false;
     private bool isAttacking = false;
-    private bool isDead = false;
+    public bool isDead = false;
 
     // Shield variables
     private bool isShieldActive = false;
@@ -37,7 +38,13 @@ public class Boss : MonoBehaviour, PlayerInterface
 
     public Animator anim, animSkill2;
     private int LayerAttack, LayerSkill1;
-
+    private void Awake()
+    {
+        if (Intance == null)
+        {
+            Intance = this;
+        }
+    }
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -114,6 +121,8 @@ public class Boss : MonoBehaviour, PlayerInterface
         if (Vector3.Distance(transform.position, player.position) > safeDistance)
         {
             navMeshAgent.SetDestination(player.position);
+            SoundManager.Instance.StopSound(SoundManager.Instance.BackgroundMusic);
+            SoundManager.Instance.PlaySound(SoundManager.Instance.MusicBoss);
         }
         else
         {
@@ -194,8 +203,15 @@ public class Boss : MonoBehaviour, PlayerInterface
         anim.SetBool("Death", isDead);
         SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.BDie, transform.position);
         navMeshAgent.isStopped = true;
+        Invoke("EndGame", 7f);
     }
 
+    void EndGame()
+    {
+        SoundManager.Instance.StopSound(SoundManager.Instance.MusicBoss);
+        SoundManager.Instance.StopSound(SoundManager.Instance.BackgroundMusic);
+        CutsceneManager.Instance.PlayCutscene(5);
+    }
     void RotateTowardsPlayer()
     {
         Vector3 directionToPlayer = player.position - transform.position;

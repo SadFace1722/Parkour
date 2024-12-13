@@ -6,6 +6,7 @@ public class SoundManager : MonoBehaviour
 
     [Header("Audio EnviromentEnviroment")]
     public AudioClip BackgroundMusic, MusicBoss, DoorOpen, DoorClose, Laser, Acid, Touch;
+
     [Header("Audio Player")]
     public AudioClip PJump, PHurt, PDie, PGunBlast;
 
@@ -17,6 +18,7 @@ public class SoundManager : MonoBehaviour
 
     [Header("Boss")]
     public AudioClip BSkill1, BSkill2, BAttack, BDie, BHurt;
+
     private AudioSource audioSource;
 
     private void Awake()
@@ -26,10 +28,10 @@ public class SoundManager : MonoBehaviour
             Instance = this;
         }
     }
+
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
-
 
         if (BackgroundMusic != null)
         {
@@ -69,4 +71,28 @@ public class SoundManager : MonoBehaviour
 
         AudioSource.PlayClipAtPoint(clip, position);
     }
+
+    public void MuteAudio(bool isMuted)
+    {
+        if (audioSource != null)
+        {
+            audioSource.mute = isMuted;
+        }
+        else
+        {
+            Debug.LogError("AudioSource is missing on SoundManager!");
+        }
+    }
+    public void StopSound(AudioClip clip)
+    {
+        if (audioSource != null && audioSource.isPlaying && audioSource.clip == clip)
+        {
+            audioSource.Stop();
+        }
+        else
+        {
+            Debug.LogWarning("The specified audio clip is not currently playing or AudioSource is missing!");
+        }
+    }
+
 }
