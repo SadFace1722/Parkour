@@ -8,7 +8,8 @@ public class CubeRespawn : MonoBehaviour
     public float disappearDelay = 2f;       // Thời gian trước khi Cube biến mất
     public float respawnDelay = 5f;         // Thời gian để Cube hiện lại
     public AudioClip touchSoundClip;        // Âm thanh phát khi chạm vào
-    public AudioClip disappearSoundClip;   // Âm thanh phát khi Cube biến mất
+    public AudioClip disappearSoundClip;    // Âm thanh phát khi Cube biến mất
+    public ParticleSystem crackEffect;      // Hiệu ứng nứt vỡ
 
     private AudioSource audioSource;        // Component AudioSource
     private Renderer cubeRenderer;          // Quản lý Renderer để ẩn/hiện Cube
@@ -65,6 +66,9 @@ public class CubeRespawn : MonoBehaviour
         // Phát âm thanh khi Cube biến mất
         PlayDisappearSound();
 
+        // Kích hoạt hiệu ứng nứt
+        PlayCrackEffect();
+
         // Ẩn Cube bằng cách tắt Renderer và Collider
         cubeRenderer.enabled = false;
         cubeCollider.enabled = false;
@@ -92,6 +96,17 @@ public class CubeRespawn : MonoBehaviour
         if (disappearSoundClip != null)
         {
             audioSource.PlayOneShot(disappearSoundClip);
+        }
+    }
+
+    private void PlayCrackEffect()
+    {
+        if (crackEffect != null)
+        {
+            // Tạo hiệu ứng tại vị trí Cube
+            crackEffect.transform.position = transform.position;
+            crackEffect.transform.rotation = transform.rotation;
+            crackEffect.Play();
         }
     }
 
