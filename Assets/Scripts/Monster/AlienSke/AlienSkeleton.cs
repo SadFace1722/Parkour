@@ -44,11 +44,6 @@ public class AlienSkeleton : MonoBehaviour, PlayerInterface
             animator.SetBool("Fast", true);  // Di chuyển nhanh
             animator.SetBool("Move", false);  // Dừng animation Move
             agent.speed = increasedSpeed;    // Tăng tốc độ di chuyển
-            if (!isRoar)
-            {
-                isRoar = true;  
-                SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.ASRoar, transform.position);
-            }
         }
         else
         {
@@ -68,6 +63,10 @@ public class AlienSkeleton : MonoBehaviour, PlayerInterface
             {
                 agent.SetDestination(player.position);
             }
+        }
+        if (Boss.Intance.isDead)
+        {
+            Die();
         }
     }
 
@@ -90,12 +89,12 @@ public class AlienSkeleton : MonoBehaviour, PlayerInterface
         {
             if (maxHealth <= 150)
             {
-                // SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.ASAttack, transform.position);
+                SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.ASAttack, transform.position);
                 animator.SetTrigger("AttackFast");
             }
             else
             {
-                // SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.ASAttack, transform.position);
+                SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.ASAttack, transform.position);
                 animator.SetTrigger("Attack");
             }
         }
@@ -119,7 +118,7 @@ public class AlienSkeleton : MonoBehaviour, PlayerInterface
 
         maxHealth -= damage;  // Giảm máu khi nhận sát thương
         animator.SetTrigger("Hurt");
-        //  SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.ASHurt, transform.position);
+        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.ASHurt, transform.position);
         if (maxHealth <= 0)
         {
             maxHealth = 0;

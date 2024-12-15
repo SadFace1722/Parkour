@@ -50,7 +50,7 @@ public class TaskManager : MonoBehaviour
         tasks.Add(new Task(2, "Kiểm tra xung quanh.", GiaiDo1, GiaiDo2, () => PlayDialogue.Instance.isSolve));
         tasks.Add(new Task(2, "Tiêu diệt quái vật.", CutscenePhongThiNghiem, KillCountAlienSke, () => KillCount >= 4));
         tasks.Add(new Task(2, "Nhập mật khẩu 314159 để mở cửa.", GiaiDo1, GiaiDo2, () => BunkerDoor.Instance.isOpen));
-        tasks.Add(new Task(2, "Tiêu diệt BossBoss", GiaiDo1, GiaiDo2, () => Boss.Intance.isDead));
+        tasks.Add(new Task(2, "Tiêu diệt Boss", GiaiDo1, GiaiDo2, () => Boss.Intance.isDead));
         if (tasks.Count > 0)
         {
             if (CurrentIndex == 0) // Nếu là lần đầu tiên chơi

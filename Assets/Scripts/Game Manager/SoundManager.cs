@@ -3,9 +3,10 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance { get; private set; }
+    public AudioSource BackgroundMusic, MusicBoss;
 
     [Header("Audio EnviromentEnviroment")]
-    public AudioClip BackgroundMusic, MusicBoss, DoorOpen, DoorClose, Laser, Acid, Touch;
+    public AudioClip DoorOpen, DoorClose, Laser, Acid, Touch;
 
     [Header("Audio Player")]
     public AudioClip PJump, PHurt, PDie, PGunBlast;
@@ -14,12 +15,12 @@ public class SoundManager : MonoBehaviour
     public AudioClip AARoar, AASpit, AAttack, AADie, AAHurt;
 
     [Header("Acid Ske")]
-    public AudioClip ASRoar, ASDie;
+    public AudioClip ASDie, ASHurt, ASAttack;
 
     [Header("Boss")]
     public AudioClip BSkill1, BSkill2, BAttack, BDie, BHurt;
 
-    private AudioSource audioSource;
+    public AudioSource audioSource;
 
     private void Awake()
     {
@@ -27,24 +28,12 @@ public class SoundManager : MonoBehaviour
         {
             Instance = this;
         }
-    }
-
-    private void Start()
-    {
-        audioSource = GetComponent<AudioSource>();
-
-        if (BackgroundMusic != null)
-        {
-            audioSource.clip = BackgroundMusic;
-            audioSource.loop = true;
-            audioSource.volume = 0.5f;
-            audioSource.Play();
-        }
         else
         {
-            Debug.LogWarning("BackgroundMusic is not assigned!");
+            Destroy(gameObject);
         }
     }
+
 
     public void PlaySound(AudioClip clip)
     {
@@ -72,27 +61,39 @@ public class SoundManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(clip, position);
     }
 
-    public void MuteAudio(bool isMuted)
+
+    public void PlayBackgroundMusic()
     {
-        if (audioSource != null)
+        if (BackgroundMusic != null && !BackgroundMusic.isPlaying)
         {
-            audioSource.mute = isMuted;
-        }
-        else
-        {
-            Debug.LogError("AudioSource is missing on SoundManager!");
-        }
-    }
-    public void StopSound(AudioClip clip)
-    {
-        if (audioSource != null && audioSource.isPlaying && audioSource.clip == clip)
-        {
-            audioSource.Stop();
-        }
-        else
-        {
-            Debug.LogWarning("The specified audio clip is not currently playing or AudioSource is missing!");
+            // Dừng nhạc Boss nếu đang phát
+            if (MusicBoss != null && MusicBoss.isPlaying)
+            {
+                MusicBoss.Stop();
+            }
+
+            // Phát nhạc nền
+            BackgroundMusic.Play();
         }
     }
 
+    public void PlayMusicBoss()
+    {
+        if (MusicBoss != null && !MusicBoss.isPlaying)
+        {
+            // Dừng nhạc nền nếu đang phát
+            if (BackgroundMusic != null && BackgroundMusic.isPlaying)
+            {
+                BackgroundMusic.Stop();
+            }
+
+            // Phát nhạc Boss
+            MusicBoss.Play();
+        }
+    }
+    public void StopMusicGame()
+    {
+        BackgroundMusic.Stop();
+        MusicBoss.Stop();
+    }
 }

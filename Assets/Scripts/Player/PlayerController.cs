@@ -240,6 +240,7 @@ public class PlayerController : MonoBehaviour
         if (damageImage != null)
         {
             isTakingDamage = true;
+            SoundManager.Instance.PlaySound(SoundManager.Instance.PHurt);
             damageTimer = damageFadeDuration; // Reset bộ đếm thời gian nhấp nháy
         }
     }

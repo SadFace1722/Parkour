@@ -118,6 +118,10 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
 
         CheckIfUsingNavMeshLink();
         UpdateWalkingAnimation();
+        if (Boss.Intance.isDead)
+        {
+            Die();
+        }
     }
 
 
@@ -163,7 +167,6 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
         nav.isStopped = true; // Ngăn di chuyển khi chết
         Debug.Log("AcidAlien đã chết!");
         TaskManager.Instance.KillCount++;
-        Destroy(gameObject, 2f);
     }
 
     private void CheckIfUsingNavMeshLink()

@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Boss : MonoBehaviour, PlayerInterface
 {
     public static Boss Intance;
-    public float health = 100f;
+    public float health = 100f, maxHealth;
     public float damage = 20f;
     public float attackRange = 10f;
     public float safeDistance = 5f;
@@ -20,7 +21,7 @@ public class Boss : MonoBehaviour, PlayerInterface
 
     private NavMeshAgent navMeshAgent;
     private float nextFireTime = 0f;
-    private bool isPlayerInRange = false;
+    public bool isPlayerInRange = false;
     private bool isAttacking = false;
     public bool isDead = false;
 
@@ -34,10 +35,14 @@ public class Boss : MonoBehaviour, PlayerInterface
     public float shieldCooldown = 10f;     // Thời gian hồi chiêu của khiên
     private bool shieldOnCooldown = false; // Trạng thái đang hồi chiêu
 
-    private float damageTaken = 0f;        // Theo dõi lượng máu đã mất
-
+    [SerializeField] private float damageTaken = 0f;
     public Animator anim, animSkill2;
     private int LayerAttack, LayerSkill1;
+
+    // UI variables
+    public Image healthBar;  // Tham chiếu tới UI Image cho thanh máu
+    public GameObject healthUI;  // GameObject chứa UI thanh máu
+
     private void Awake()
     {
         if (Intance == null)
@@ -47,6 +52,7 @@ public class Boss : MonoBehaviour, PlayerInterface
     }
     void Start()
     {
+        healthUI.SetActive(false);
         anim = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         player = GameObject.FindWithTag("Player")?.transform;
@@ -62,6 +68,8 @@ public class Boss : MonoBehaviour, PlayerInterface
         LayerSkill1 = anim.GetLayerIndex("Skill1");
 
         InvokeRepeating("CheckHealthAndUpdate", 0f, 1f);
+
+        health = maxHealth;
     }
 
     void Update()
@@ -74,6 +82,7 @@ public class Boss : MonoBehaviour, PlayerInterface
 
         if (isPlayerInRange)
         {
+            healthUI.SetActive(true);
             ChasePlayer();
         }
         else
@@ -96,8 +105,13 @@ public class Boss : MonoBehaviour, PlayerInterface
             isAttacking = true;
             anim.SetTrigger("Attack");
         }
-
+        if (health < 200)
+        {
+            ObjectSpawner.Instance.SpawnObjects();
+        }
         RotateTowardsPlayer();
+        CheckHealthAndUpdate();
+        OnPlayerDeath();
     }
 
     void CheckHealthAndUpdate()
@@ -106,6 +120,12 @@ public class Boss : MonoBehaviour, PlayerInterface
         {
             isDead = true;
             Die();
+        }
+
+        // Cập nhật UI thanh máu
+        if (healthBar != null)
+        {
+            healthBar.fillAmount = health / maxHealth;
         }
     }
 
@@ -121,8 +141,7 @@ public class Boss : MonoBehaviour, PlayerInterface
         if (Vector3.Distance(transform.position, player.position) > safeDistance)
         {
             navMeshAgent.SetDestination(player.position);
-            SoundManager.Instance.StopSound(SoundManager.Instance.BackgroundMusic);
-            SoundManager.Instance.PlaySound(SoundManager.Instance.MusicBoss);
+            SoundManager.Instance.PlayMusicBoss();
         }
         else
         {
@@ -200,6 +219,7 @@ public class Boss : MonoBehaviour, PlayerInterface
 
     void Die()
     {
+        healthUI.SetActive(false);
         anim.SetBool("Death", isDead);
         SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.BDie, transform.position);
         navMeshAgent.isStopped = true;
@@ -208,8 +228,7 @@ public class Boss : MonoBehaviour, PlayerInterface
 
     void EndGame()
     {
-        SoundManager.Instance.StopSound(SoundManager.Instance.MusicBoss);
-        SoundManager.Instance.StopSound(SoundManager.Instance.BackgroundMusic);
+        SoundManager.Instance.StopMusicGame();
         CutsceneManager.Instance.PlayCutscene(5);
     }
     void RotateTowardsPlayer()
@@ -255,6 +274,19 @@ public class Boss : MonoBehaviour, PlayerInterface
             GameObject bullet = Instantiate(specialBulletPrefab, firePoint.position, firePoint.rotation);
             Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
             bulletRb.velocity = firingDirection * bulletSpeed;
+        }
+    }
+    void OnPlayerDeath()
+    {
+        if (PlayerController.Instance.isDead)
+        {
+            SoundManager.Instance.StopMusicGame();
+            DeactivateShield();
+            animSkill2.SetBool("Skill2", false);
+            health = maxHealth;
+            healthUI.SetActive(false);
+            ObjectSpawner.Instance.ClearSpawnedObjects();
+            SoundManager.Instance.PlayBackgroundMusic();
         }
     }
 }

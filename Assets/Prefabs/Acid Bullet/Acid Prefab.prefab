@@ -10,12 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 8394713716856340644}
   - component: {fileID: 4140461625722072835}
-  - component: {fileID: 7029273984877736119}
   - component: {fileID: 782926852163461442}
   - component: {fileID: 9025753518456809583}
   - component: {fileID: 7736079368540147647}
   - component: {fileID: 4618228966986751143}
-  - component: {fileID: -8323952370212920394}
+  - component: {fileID: -1808865967692234764}
   m_Layer: 0
   m_Name: Acid Prefab
   m_TagString: Untagged
@@ -82,19 +81,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7029273984877736119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 967616092162466462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa4077bdd650f6a448dcb47efaa67b39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 0
 --- !u!96 &782926852163461442
 TrailRenderer:
   serializedVersion: 3
@@ -266,7 +252,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-8323952370212920394
+--- !u!114 &-1808865967692234764
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -275,7 +261,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 967616092162466462}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa4077bdd650f6a448dcb47efaa67b39, type: 3}
+  m_Script: {fileID: 11500000, guid: 093c1b528b73eb74687ab51aa715613c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 5

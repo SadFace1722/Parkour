@@ -15,5 +15,9 @@ public class bullet : MonoBehaviour
         {
             PlayerController.Instance.TakeDamage(damage);
         }
+        if (other.gameObject.layer == LayerMask.NameToLayer("Default"))
+        {
+            Destroy(gameObject);
+        }
     }
 }
