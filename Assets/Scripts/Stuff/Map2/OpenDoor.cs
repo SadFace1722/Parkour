@@ -29,12 +29,5 @@ public class OpenDoor : MonoBehaviour, PlayerInterface
             IsOpenDoor = true;
         }
     }
-    public void OpenDoorSound()
-    {
-        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.DoorOpen, transform.position);
-    }
-    public void CloseDoorSound()
-    {
-        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.DoorClose, transform.position);
-    }
+
 }

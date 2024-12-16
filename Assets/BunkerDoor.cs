@@ -28,4 +28,12 @@ public class BunkerDoor : MonoBehaviour
     {
         anim.SetBool("Door", isOpen);
     }
+    public void OpenDoorSound()
+    {
+        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.DoorOpen, transform.position);
+    }
+    public void CloseDoorSound()
+    {
+        SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.DoorClose, transform.position);
+    }
 }

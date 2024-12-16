@@ -6,7 +6,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource BackgroundMusic, MusicBoss;
 
     [Header("Audio EnviromentEnviroment")]
-    public AudioClip DoorOpen, DoorClose, Laser, Acid, Touch;
+    public AudioClip DoorOpen, DoorClose, Laser, Acid, Touch, Water;
 
     [Header("Audio Player")]
     public AudioClip PJump, PHurt, PDie, PGunBlast;
