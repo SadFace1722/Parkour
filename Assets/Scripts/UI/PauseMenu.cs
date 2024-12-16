@@ -3,15 +3,24 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    public GameObject pauseMenuPanel; // Kéo Panel menu vào đây trong Inspector
-    public MonoBehaviour playerController; // Kéo script điều khiển Player vào đây
-    public MonoBehaviour firstPersonLook; // Kéo script điều khiển góc nhìn thứ nhất vào đây
+    public GameObject pauseMenuPanel;
+    public GameObject tutorialImage; 
+    public MonoBehaviour playerController;
+    public MonoBehaviour firstPersonLook;
+    public AudioSource audioSource; 
+    public AudioClip pauseSound;
+    public AudioClip resumeSound; 
+    public AudioClip tutorialSound; 
+    public AudioClip mainMenuSound; 
+
     private bool isPaused = false;
-    private AudioSource[] allAudioSources; // Mảng lưu tất cả các AudioSource
+    private bool isTutorialActive = false; 
+    private AudioSource[] allAudioSources;
 
     void Start()
     {
         pauseMenuPanel.SetActive(false); // Ẩn menu lúc đầu
+        tutorialImage.SetActive(false); // Ẩn hình ảnh hướng dẫn lúc đầu
         HideCursor(); // Ẩn con trỏ chuột khi bắt đầu game
         Time.timeScale = 1; // Đảm bảo thời gian game chạy bình thường khi bắt đầu
         allAudioSources = FindObjectsOfType<AudioSource>(); // Tìm tất cả các AudioSource trong scene
@@ -21,13 +30,24 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            TogglePause();
+            if (isTutorialActive)
+            {
+                CloseTutorial();
+            }
+            else
+            {
+                TogglePause();
+            }
         }
     }
 
     public void TogglePause()
     {
         isPaused = !isPaused;
+
+        // Phát âm thanh dựa trên trạng thái
+        PlaySound(isPaused ? pauseSound : resumeSound);
+
         pauseMenuPanel.SetActive(isPaused);
         Time.timeScale = isPaused ? 0 : 1; // Tạm dừng hoặc tiếp tục thời gian trong game
         playerController.enabled = !isPaused; // Vô hiệu hóa hoặc kích hoạt script điều khiển Player
@@ -35,7 +55,6 @@ public class PauseMenu : MonoBehaviour
         Cursor.visible = isPaused; // Hiển thị hoặc ẩn con trỏ chuột
         Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;
 
-        // Khóa tất cả các nút và bàn phím khi game pause
         if (isPaused)
         {
             DisableInput();
@@ -48,48 +67,64 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
-    // Vô hiệu hóa tất cả các đầu vào từ bàn phím và chuột khi game bị tạm dừng
     private void DisableInput()
     {
-        // Khóa toàn bộ các phím điều khiển và ngừng các đầu vào khác
-        Cursor.lockState = CursorLockMode.None; // Cho phép chuột tự do
-        Cursor.visible = true; // Hiển thị chuột
-        // Tắt sự kiện đầu vào bàn phím trong game (không cho di chuyển, không cho nhấn phím)
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         Input.ResetInputAxes();
     }
 
-    // Bật lại các đầu vào khi game tiếp tục
     private void EnableInput()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    // Tắt hoặc bật âm thanh trong game
     private void MuteAudio(bool mute)
     {
         foreach (AudioSource audioSource in allAudioSources)
         {
-            audioSource.mute = mute; // Tắt hoặc bật âm thanh
+            audioSource.mute = mute;
         }
     }
 
     public void PlayGame()
     {
-        TogglePause(); // Tiếp tục game
+        TogglePause();
     }
 
     public void GoToMainMenu()
     {
+        PlaySound(mainMenuSound); // Phát âm thanh trở về menu chính
         Time.timeScale = 1;
         TaskManager.Instance.SaveGame();
         PlayerController.Instance.SavePosition(PlayerController.Instance.transform.position);
-        SceneManager.LoadScene("Menu"); // Load scene Menu chính
+        SceneManager.LoadScene("Menu");
     }
 
-    public void Restart()
+    public void Tutorial()
     {
-        // Có thể thực hiện lại thao tác restart ở đây nếu cần
+        PlaySound(tutorialSound); // Phát âm thanh mở hướng dẫn
+        isTutorialActive = true;
+        tutorialImage.SetActive(true); // Hiển thị hình ảnh hướng dẫn
+        pauseMenuPanel.SetActive(false); // Ẩn menu tạm dừng
+        Time.timeScale = 0; // Dừng thời gian trong game
+    }
+
+    private void CloseTutorial()
+    {
+        PlaySound(tutorialSound); // Phát âm thanh đóng hướng dẫn
+        isTutorialActive = false;
+        tutorialImage.SetActive(false); // Ẩn hình ảnh hướng dẫn
+        pauseMenuPanel.SetActive(true); // Hiển thị lại menu tạm dừng
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip); // Phát âm thanh một lần
+        }
     }
 
     private void HideCursor()
