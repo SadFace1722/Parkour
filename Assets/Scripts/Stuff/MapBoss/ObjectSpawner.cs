@@ -23,14 +23,12 @@ public class ObjectSpawner : MonoBehaviour
         // Kiểm tra nếu số lượng đối tượng đã đạt giới hạn
         if (spawnedObjects.Count >= maxSpawnedObjects)
         {
-            Debug.Log("Reached max spawned objects limit.");
             return;
         }
 
         // Kiểm tra danh sách vị trí spawn
         if (spawnPoints == null || spawnPoints.Count == 0)
         {
-            Debug.LogError("No spawn points available!");
             return;
         }
 

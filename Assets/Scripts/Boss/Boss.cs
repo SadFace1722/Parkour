@@ -223,13 +223,13 @@ public class Boss : MonoBehaviour, PlayerInterface
         anim.SetBool("Death", isDead);
         SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.BDie, transform.position);
         navMeshAgent.isStopped = true;
-        Invoke("EndGame", 7f);
+        Invoke("EndGame", 2f);
     }
 
     void EndGame()
     {
         SoundManager.Instance.StopMusicGame();
-        CutsceneManager.Instance.PlayCutscene(5);
+        CutsceneManager.Instance.PlayTwoCutscenesAndLoadScene(5, 6, "Menu");
     }
     void RotateTowardsPlayer()
     {
