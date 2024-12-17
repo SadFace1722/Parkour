@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Boss : MonoBehaviour, PlayerInterface
 {
     public static Boss Intance;
-    public float health = 100f, maxHealth;
+    public float health = 100f, maxHealth,lowHP;
     public float damage = 20f;
     public float attackRange = 10f;
     public float safeDistance = 5f;
@@ -105,7 +105,7 @@ public class Boss : MonoBehaviour, PlayerInterface
             isAttacking = true;
             anim.SetTrigger("Attack");
         }
-        if (health < 200)
+        if (health < lowHP)
         {
             ObjectSpawner.Instance.SpawnObjects();
         }

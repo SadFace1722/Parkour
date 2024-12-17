@@ -5,27 +5,34 @@ using UnityEngine;
 public class CubeYellow : MonoBehaviour, PlayerInterface
 {
     public static CubeYellow Instance;
-    Animator animator;
-    public bool Active;
+    public bool isActive = false;
+    Animator anim;
     private void Awake()
     {
         if (Instance == null)
-
         {
             Instance = this;
         }
     }
     private void Start()
     {
-        animator = transform.parent.GetComponent<Animator>();
+        anim = transform.parent.GetComponent<Animator>();
     }
     public void Interact()
     {
-        Active = true;
-        animator.SetBool("button", Active = true);
+        GameLaser.Instance.OnYellowButtonClicked();
+        anim.SetBool("button", true);
+    }
+    public void Activate()
+    {
+        isActive = true;
     }
     private void LateUpdate()
     {
-        animator.SetBool("button", Active);
+        anim.SetBool("button", isActive);
+    }
+    public void Reset()
+    {
+        isActive = false;
     }
 }

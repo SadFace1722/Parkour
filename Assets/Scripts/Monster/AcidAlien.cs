@@ -40,6 +40,8 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
     private float lastRangedAttackTime = 0f;
     public float aimOffset = 1.0f;
     public Transform FirePoint;
+
+    private BoxCollider box;
     private void Awake()
     {
         if (Instance == null)
@@ -50,12 +52,14 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
 
     private void Start()
     {
+        box = GetComponent<BoxCollider>();
         nav = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
 
         normalSpeed = nav.speed;
-
+        nav.avoidancePriority = Random.Range(30, 60);
+        
         GameObject saveSpotParent = GameObject.Find("SaveSpotOfAcidAlien");
         if (saveSpotParent != null && saveSpotParent.activeInHierarchy)
         {
@@ -162,6 +166,8 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
         SoundManager.Instance.PlaySoundAtPosition(SoundManager.Instance.AADie, transform.position);
         nav.isStopped = true; // Ngăn di chuyển khi chết
         Debug.Log("AcidAlien đã chết!");
+        nav.enabled = false;
+        box.enabled = false;
         TaskManager.Instance.KillCount++;
     }
 
