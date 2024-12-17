@@ -64,10 +64,6 @@ public class AcidAlien : MonoBehaviour, PlayerInterface
                 safePoints.Add(child);
             }
         }
-        else
-        {
-            Debug.LogWarning("Không tìm thấy hoặc SaveSpotOfAcidAlien bị hủy hoặc không hoạt động.");
-        }
     }
 
     private void Update()

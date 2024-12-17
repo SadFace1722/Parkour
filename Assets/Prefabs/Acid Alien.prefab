@@ -104,7 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b192f421cde8715498bd72faf2de8a7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 40
+  detectionRadius: 60
   attackRadius: 2.5
   attackDamage: 5
   health: 100
@@ -133,7 +133,7 @@ NavMeshAgent:
   m_Radius: 0.002
   m_Speed: 6
   m_Acceleration: 800
-  avoidancePriority: 50
+  avoidancePriority: 0
   m_AngularSpeed: 800
   m_StoppingDistance: 1.5
   m_AutoTraverseOffMeshLink: 1
@@ -142,7 +142,7 @@ NavMeshAgent:
   m_Height: 0.018
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!65 &3518678831589257303
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -25,6 +25,7 @@ public class StartPoint : MonoBehaviour
         }
     }
 
+    [System.Obsolete]
     void Update()
     {
         // Chỉ đếm thời gian khi đã bắt đầu
@@ -113,6 +114,7 @@ public class StartPoint : MonoBehaviour
     }
 
     // Coroutine gây sát thương liên tục
+    [System.Obsolete]
     private IEnumerator ApplyContinuousDamage()
     {
         while (true)  // Tiếp tục gây sát thương liên tục

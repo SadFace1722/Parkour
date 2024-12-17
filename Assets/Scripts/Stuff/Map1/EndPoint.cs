@@ -4,6 +4,7 @@ public class EndPoint : MonoBehaviour
 {
     private StartPoint startPoint;
 
+    [System.Obsolete]
     void Start()
     {
         // Tìm StartPoint trong scene
