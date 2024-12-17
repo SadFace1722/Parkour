@@ -10,10 +10,10 @@ public class CubeCollisionMove : MonoBehaviour
     public AudioClip soundClip;           // Âm thanh cần phát
 
     private AudioSource audioSource;      // Component AudioSource
-
     private Vector3 originalPosition;
+    private bool isPlayerInRadius = false; // Kiểm tra trạng thái Player trong vùng
+    private bool isMoving = false;        // Trạng thái di chuyển
     public bool moveLeft = true;          // Biến chọn hướng di chuyển: true cho trái, false cho phải
-    private bool hasMovedOnce = false;    // Kiểm tra Cube đã di chuyển
 
     private void Start()
     {
@@ -31,46 +31,42 @@ public class CubeCollisionMove : MonoBehaviour
 
     private void Update()
     {
-        if (!hasMovedOnce)  // Chỉ kiểm tra va chạm nếu Cube chưa di chuyển lần nào
-        {
-            CheckCollision();
-        }
+        CheckPlayerInRadius();
     }
 
-    private void CheckCollision()
+    private void CheckPlayerInRadius()
     {
-        // Kiểm tra các va chạm xung quanh Cube
+        // Kiểm tra Player trong vùng bán kính checkRadius
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, checkRadius, collisionLayer);
+        bool playerDetected = false;
 
         foreach (var hitCollider in hitColliders)
         {
-            if (hitCollider.CompareTag("Player") && !hasMovedOnce)
+            if (hitCollider.CompareTag("Player"))
             {
-                Debug.Log("Player đã chạm vào Cube");
-
-                // Bắt đầu di chuyển Cube và phát âm thanh
-                StartCoroutine(MoveCube());
-                PlaySoundOnce();
+                playerDetected = true;
                 break;
             }
+        }
+
+        // Xử lý khi Player vào vùng hoặc rời vùng
+        if (playerDetected && !isPlayerInRadius && !isMoving)
+        {
+            isPlayerInRadius = true;
+            StartCoroutine(MoveCube()); // Di chuyển Cube
+            PlaySoundOnce();
+        }
+        else if (!playerDetected && isPlayerInRadius && !isMoving)
+        {
+            isPlayerInRadius = false;
+            StartCoroutine(MoveCubeBack()); // Di chuyển Cube về vị trí ban đầu
         }
     }
 
     private IEnumerator MoveCube()
     {
-        hasMovedOnce = true; // Đánh dấu Cube đã di chuyển lần đầu tiên
-
-        // Tính toán vị trí mục tiêu cho từng hướng di chuyển
-        Vector3 targetPosition = originalPosition;
-
-        if (moveLeft)
-        {
-            targetPosition = originalPosition + Vector3.left * moveDistance;
-        }
-        else
-        {
-            targetPosition = originalPosition + Vector3.right * moveDistance;
-        }
+        isMoving = true; // Đặt trạng thái Cube đang di chuyển
+        Vector3 targetPosition = originalPosition + (moveLeft ? Vector3.left : Vector3.right) * moveDistance;
 
         // Di chuyển Cube đến vị trí mục tiêu
         float elapsedTime = 0f;
@@ -81,6 +77,24 @@ public class CubeCollisionMove : MonoBehaviour
             yield return null;
         }
         transform.position = targetPosition; // Đặt Cube tại vị trí mục tiêu
+        isMoving = false; // Kết thúc di chuyển
+    }
+
+    private IEnumerator MoveCubeBack()
+    {
+        isMoving = true; // Đặt trạng thái Cube đang di chuyển
+        Vector3 currentPosition = transform.position;
+
+        // Di chuyển Cube trở lại vị trí ban đầu
+        float elapsedTime = 0f;
+        while (elapsedTime < moveDuration)
+        {
+            transform.position = Vector3.Lerp(currentPosition, originalPosition, elapsedTime / moveDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = originalPosition; // Đặt Cube về vị trí ban đầu
+        isMoving = false; // Kết thúc di chuyển
     }
 
     // Phát âm thanh một lần duy nhất
@@ -94,6 +108,7 @@ public class CubeCollisionMove : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        // Vẽ bán kính kiểm tra va chạm
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, checkRadius);
     }
