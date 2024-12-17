@@ -44,7 +44,7 @@ public class TaskManager : MonoBehaviour
         tasks.Add(new Task(15f, "Nhảy qua khu vực Acid", () => nv6.Instance.BangQuaAcid));
         tasks.Add(new Task(2, "Nhặt khẩu súng từ xác chết.", NhatKhauSung, NhatSungHoanThanh, () => PickupGun.Instance.PickuptheGun));
         tasks.Add(new Task(2, "Tìm cách tắt Acid.", TimCachTatAcid, DaTatDuocAcid, () => TurnOffAcid.Instance.turnOff));
-        tasks.Add(new Task(2, "Tiêu diệt quái vật.", BatDauTieuDietAcidAlien, DaTieuDietXongAcidAlien, () => KillCount >= 5));
+        tasks.Add(new Task(2, "Tiêu diệt quái vật.", BatDauTieuDietAcidAlien, DaTieuDietXongAcidAlien, () => KillCount >= 3));
         tasks.Add(new Task(2, "Tìm đường thoát khỏi đây.", TimDuongThoatKhoiDay, DaThoatKhoiKhuVucAcid, () => OpenDoor.Instance.IsOpenDoor));
         tasks.Add(new Task(2, "Tìm cách tắt lazer.", TieuDietQuaiVat, TatDuocLazer, () => GameLaser.Instance.isComplete));
         tasks.Add(new Task(2, "Kiểm tra xung quanh.", GiaiDo1, GiaiDo2, () => PlayDialogue.Instance.isSolve));
@@ -188,7 +188,7 @@ public class TaskManager : MonoBehaviour
         WeaponManager.Instance.GivePlayerGun();
         if (TurnOffAcid.Instance.turnOff)
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 33; i++)
             {
                 EnemySpawner.Instance.SpawnEnemy();
             }

@@ -199,7 +199,7 @@ public class Boss : MonoBehaviour, PlayerInterface
     void DeactivateShield()
     {
         isShieldActive = false;
-        Debug.Log("Shield deactivated!");
+//        Debug.Log("Shield deactivated!");
         animSkill2.SetBool("Skill2", false);
 
         // Bắt đầu hồi chiêu khi khiên bị phá

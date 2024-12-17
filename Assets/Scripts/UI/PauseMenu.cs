@@ -4,26 +4,22 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pauseMenuPanel;
-    public GameObject tutorialImage; 
+    public GameObject tutorialImage;
     public MonoBehaviour playerController;
     public MonoBehaviour firstPersonLook;
-    public AudioSource audioSource; 
-    public AudioClip pauseSound;
-    public AudioClip resumeSound; 
-    public AudioClip tutorialSound; 
-    public AudioClip mainMenuSound; 
-
     private bool isPaused = false;
-    private bool isTutorialActive = false; 
-    private AudioSource[] allAudioSources;
+    private bool isTutorialActive = false;
+
+
+    public AudioSource buttonAudioSource; 
+    public AudioClip buttonClickSound;
 
     void Start()
     {
         pauseMenuPanel.SetActive(false); // Ẩn menu lúc đầu
         tutorialImage.SetActive(false); // Ẩn hình ảnh hướng dẫn lúc đầu
         HideCursor(); // Ẩn con trỏ chuột khi bắt đầu game
-        Time.timeScale = 1; // Đảm bảo thời gian game chạy bình thường khi bắt đầu
-        allAudioSources = FindObjectsOfType<AudioSource>(); // Tìm tất cả các AudioSource trong scene
+        Time.timeScale = 1; 
     }
 
     void Update()
@@ -44,9 +40,7 @@ public class PauseMenu : MonoBehaviour
     public void TogglePause()
     {
         isPaused = !isPaused;
-
-        // Phát âm thanh dựa trên trạng thái
-        PlaySound(isPaused ? pauseSound : resumeSound);
+        PlayButtonSound();
 
         pauseMenuPanel.SetActive(isPaused);
         Time.timeScale = isPaused ? 0 : 1; // Tạm dừng hoặc tiếp tục thời gian trong game
@@ -58,12 +52,10 @@ public class PauseMenu : MonoBehaviour
         if (isPaused)
         {
             DisableInput();
-            MuteAudio(true); // Tắt âm thanh khi game pause
         }
         else
         {
             EnableInput();
-            MuteAudio(false); // Bật âm thanh khi game tiếp tục
         }
     }
 
@@ -80,22 +72,16 @@ public class PauseMenu : MonoBehaviour
         Cursor.visible = false;
     }
 
-    private void MuteAudio(bool mute)
-    {
-        foreach (AudioSource audioSource in allAudioSources)
-        {
-            audioSource.mute = mute;
-        }
-    }
 
     public void PlayGame()
     {
+        PlayButtonSound();
         TogglePause();
     }
 
     public void GoToMainMenu()
     {
-        PlaySound(mainMenuSound); // Phát âm thanh trở về menu chính
+        PlayButtonSound();
         Time.timeScale = 1;
         TaskManager.Instance.SaveGame();
         PlayerController.Instance.SavePosition(PlayerController.Instance.transform.position);
@@ -104,7 +90,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Tutorial()
     {
-        PlaySound(tutorialSound); // Phát âm thanh mở hướng dẫn
+        PlayButtonSound();
         isTutorialActive = true;
         tutorialImage.SetActive(true); // Hiển thị hình ảnh hướng dẫn
         pauseMenuPanel.SetActive(false); // Ẩn menu tạm dừng
@@ -113,23 +99,24 @@ public class PauseMenu : MonoBehaviour
 
     private void CloseTutorial()
     {
-        PlaySound(tutorialSound); // Phát âm thanh đóng hướng dẫn
+        PlayButtonSound();
         isTutorialActive = false;
         tutorialImage.SetActive(false); // Ẩn hình ảnh hướng dẫn
         pauseMenuPanel.SetActive(true); // Hiển thị lại menu tạm dừng
     }
 
-    private void PlaySound(AudioClip clip)
-    {
-        if (audioSource != null && clip != null)
-        {
-            audioSource.PlayOneShot(clip); // Phát âm thanh một lần
-        }
-    }
 
     private void HideCursor()
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    private void PlayButtonSound()
+    {
+        if (buttonAudioSource != null && buttonClickSound != null)
+        {
+            buttonAudioSource.PlayOneShot(buttonClickSound); // Phát âm thanh một lần
+        }
     }
 }

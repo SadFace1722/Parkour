@@ -10,17 +10,28 @@ public class MainMenuGame : MonoBehaviour
     public GameObject BasePanel;
     public GameObject SettingPanel;
 
+
+    public AudioSource buttonAudioSource; // Nguồn âm thanh khi nhấn nút
+    public AudioSource backgroundMusicSource; // Nguồn phát nhạc nền
+    public AudioClip buttonClickSound; // Âm thanh khi nhấn nút
+    public AudioClip backgroundMusic; // Nhạc nền
+
     void Start()
-    {
-        // Kiểm tra trạng thái dữ liệu khi game bắt đầu
+    { // Bắt đầu phát nhạc nền
+        if (backgroundMusicSource != null && backgroundMusic != null)
+        {
+            backgroundMusicSource.clip = backgroundMusic;
+            backgroundMusicSource.loop = true; // Lặp lại nhạc nền
+            backgroundMusicSource.Play();
+        }
         UpdateStartButtonText();
 
         // Các hành động cho các nút
-        StartBtn.onClick.AddListener(OnStartButtonClick);
-        SettingBtn.onClick.AddListener(ToggleSettings);
-        ExitBtn.onClick.AddListener(ExitGame);
-        BackToBaseBtn.onClick.AddListener(ToggleSettings);
-        ClearDataBtn.onClick.AddListener(ClearGameData);
+        StartBtn.onClick.AddListener(() => { PlayButtonClickSound(); OnStartButtonClick(); });
+        SettingBtn.onClick.AddListener(() => { PlayButtonClickSound(); ToggleSettings(); });
+        ExitBtn.onClick.AddListener(() => { PlayButtonClickSound(); ExitGame(); });
+        BackToBaseBtn.onClick.AddListener(() => { PlayButtonClickSound(); ToggleSettings(); });
+        ClearDataBtn.onClick.AddListener(() => { PlayButtonClickSound(); ClearGameData(); });
 
         ShowBasePanel();
     }
@@ -75,5 +86,13 @@ public class MainMenuGame : MonoBehaviour
     {
         BasePanel.SetActive(true);
         SettingPanel.SetActive(false);
+    }
+
+    public void PlayButtonClickSound()
+    {
+        if (buttonAudioSource != null && buttonClickSound != null)
+        {
+            buttonAudioSource.PlayOneShot(buttonClickSound);
+        }
     }
 }
