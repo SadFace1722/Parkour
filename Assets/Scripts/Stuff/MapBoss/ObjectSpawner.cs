@@ -17,7 +17,13 @@ public class ObjectSpawner : MonoBehaviour
             Instance = this;
         }
     }
-
+    private void LateUpdate()
+    {
+        if (Boss.Intance.health < 100)
+        {
+            SpawnObjects();
+        }
+    }
     public void SpawnObjects()
     {
         // Kiểm tra nếu số lượng đối tượng đã đạt giới hạn
