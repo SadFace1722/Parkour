@@ -3,25 +3,23 @@ using UnityEngine;
 
 public class CubeCollisionMoveVertical : MonoBehaviour
 {
-    public float checkRadius = 5f;
-    public LayerMask collisionLayer;
-    public float moveDistance = 5f;   // Khoảng cách di chuyển
-    public float moveDuration = 1f;   // Thời gian di chuyển đến vị trí mới
-    public AudioClip soundClip;       // Âm thanh cần phát
+    public float checkRadius = 5f;      // Bán kính kiểm tra vùng
+    public LayerMask collisionLayer;    // Layer của Player
+    public float moveDistance = 5f;     // Khoảng cách Cube di chuyển
+    public float moveDuration = 1f;     // Thời gian để di chuyển
+    public AudioClip soundClip;         // Âm thanh khi di chuyển
 
-    private AudioSource audioSource;   // Component AudioSource
-
-    private Vector3 originalPosition;
-    private bool hasMovedOnce = false; // Biến kiểm tra Cube đã di chuyển
+    private AudioSource audioSource;    // AudioSource để phát âm thanh
+    private Vector3 originalPosition;   // Lưu vị trí ban đầu của Cube
+    private bool isMoving = false;      // Đánh dấu đang di chuyển
+    private bool playerInside = false;  // Đánh dấu Player đang trong vùng
 
     private void Start()
     {
-        originalPosition = transform.position; // Lưu vị trí ban đầu của Cube
+        originalPosition = transform.position; // Lưu lại vị trí ban đầu của Cube
 
-        // Lấy AudioSource từ GameObject
+        // Kiểm tra và thêm AudioSource nếu không có
         audioSource = GetComponent<AudioSource>();
-
-        // Nếu không có AudioSource, thêm vào GameObject
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
@@ -30,34 +28,42 @@ public class CubeCollisionMoveVertical : MonoBehaviour
 
     private void Update()
     {
-        if (!hasMovedOnce)
-        {
-            CheckCollision();
-        }
+        CheckCollision();
     }
 
     private void CheckCollision()
     {
+        // Kiểm tra xem Player có trong vùng không
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, checkRadius, collisionLayer);
+        bool playerInZone = false;
 
         foreach (var hitCollider in hitColliders)
         {
-            if (hitCollider.CompareTag("Player") && !hasMovedOnce)
+            if (hitCollider.CompareTag("Player"))
             {
-                Debug.Log("Player đã chạm vào Cube");
-
-                // Bắt đầu di chuyển Cube theo hướng lên/xuống và phát âm thanh
-                StartCoroutine(MoveCubeVertical());
-                PlaySoundOnce();
+                playerInZone = true;
                 break;
             }
+        }
+
+        // Nếu Player mới vào vùng và Cube không đang di chuyển, thực hiện di chuyển
+        if (playerInZone && !playerInside && !isMoving)
+        {
+            playerInside = true;
+            StartCoroutine(MoveCubeVertical());
+        }
+        else if (!playerInZone)
+        {
+            // Reset trạng thái khi Player rời khỏi vùng
+            playerInside = false;
         }
     }
 
     private IEnumerator MoveCubeVertical()
     {
-        hasMovedOnce = true; // Đánh dấu Cube đã di chuyển lần đầu tiên
-        Vector3 targetPosition = originalPosition + Vector3.up * moveDistance;
+        isMoving = true; // Đánh dấu đang di chuyển
+
+        Vector3 targetPosition = originalPosition + Vector3.up * moveDistance; // Vị trí di chuyển lên
 
         // Di chuyển Cube lên
         float elapsedTime = 0f;
@@ -69,10 +75,13 @@ public class CubeCollisionMoveVertical : MonoBehaviour
         }
         transform.position = targetPosition;
 
-        // Quay lại vị trí ban đầu
-        yield return new WaitForSeconds(0.5f);  // Thời gian nghỉ giữa di chuyển lên và xuống
-        elapsedTime = 0f;
+        PlaySoundOnce(); // Phát âm thanh
 
+        // Chờ một chút trước khi quay lại
+        yield return new WaitForSeconds(0.5f);
+
+        // Di chuyển trở về vị trí ban đầu
+        elapsedTime = 0f;
         while (elapsedTime < moveDuration)
         {
             transform.position = Vector3.Lerp(targetPosition, originalPosition, elapsedTime / moveDuration);
@@ -80,12 +89,13 @@ public class CubeCollisionMoveVertical : MonoBehaviour
             yield return null;
         }
         transform.position = originalPosition;
+
+        isMoving = false; // Cho phép di chuyển lại khi Player vào vùng lần tiếp theo
     }
 
-    // Phát âm thanh một lần duy nhất
     private void PlaySoundOnce()
     {
-        if (soundClip != null)
+        if (soundClip != null && audioSource != null)
         {
             audioSource.PlayOneShot(soundClip);
         }
@@ -93,7 +103,8 @@ public class CubeCollisionMoveVertical : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.blue;
+        // Vẽ bán kính kiểm tra vùng trong Scene
+        Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, checkRadius);
     }
 }
